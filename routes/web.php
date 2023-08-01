@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\GoogleSheetController;
 
 /*
@@ -14,8 +16,19 @@ use App\Http\Controllers\GoogleSheetController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+/*
+|--------------------------------------------------------------------------
+| Auth Route
+|--------------------------------------------------------------------------
+*/
+Route::get('/login', [AuthController::class,'index'])->name('login');
+Route::post('/login', [AuthController::class,'login'])->name('logging');
+Route::get('/logout', [AuthController::class,'logout'])->name('logout');
+
+
+Route::prefix('/{artist}')->middleware(['checkStatus', 'artist', 'checkUser'])->group(function () {
+    Route::get('/', [ArtistController::class, 'test'])->name('test.artist');
 });
 
 Route::get('sheet',[GoogleSheetController::class, 'index']);
