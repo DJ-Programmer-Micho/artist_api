@@ -159,9 +159,27 @@
     
                     <!-- Begin Page Content -->
                     <div class="container-fluid">
+                    <div class="card hovercard">
+                        <div class="cardheader" style="background: url('{{ $bannerImageUrl }}') no-repeat; background-size: cover;">
+                        </div>
+                        <div class="avatar">
+                            <img alt="" src="{{$thumbnails}}">
+                        </div>
+
+
+
+                        <div class="info">
+                            <div class="title">
+                                <h2 class="text-white">{{$channelName}}</h2>
+                            </div>
+                            <div class="text-secondary text-white">{{$customUrl}} - {{$country}}</div>
+        
+                            <div class="text-secondary text-white">{{$description}}</div>
+                        </div>
+                    </div>
                         <!-- Page Heading -->
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-0 text-gray-800">{{$channelName}}</h1>
+                            {{-- <h1 class="h3 mb-0 text-gary-200">{{$channelName}}</h1> --}}
                             <!-- <a
                                 href="#"
                                 class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
@@ -181,8 +199,8 @@
                                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                     Earnings (Monthly)
                                                 </div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    ${{($earningsSum * 0.6) / 12}}
+                                                <div class="h5 mb-0 font-weight-bold text-gary-200">
+                                                    ${{($earningsSum) / 12}}
                                                 </div>
                                             </div>
                                             <div class="col-auto">
@@ -202,8 +220,8 @@
                                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                     Earnings (Annual)
                                                 </div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    ${{$earningsSum * 0.6}}
+                                                <div class="h5 mb-0 font-weight-bold text-gary-200">
+                                                    ${{$earningsSum}}
                                                 </div>
                                             </div>
                                             <div class="col-auto">
@@ -222,7 +240,7 @@
                                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                     You Earn
                                                 </div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <div class="h5 mb-0 font-weight-bold text-gary-200">
                                                     0$
                                                 </div>
                                             </div>
@@ -245,7 +263,7 @@
                                                 </div>
                                                 <div class="row no-gutters align-items-center">
                                                     <div class="col-auto">
-                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gary-200">
                                                             93%
                                                         </div>
                                                     </div>
@@ -274,7 +292,7 @@
                                                 <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                                     Subscribe (Peroid Update)
                                                 </div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <div class="h5 mb-0 font-weight-bold text-gary-200">
                                                     {{$subscribersCount}} subscribers
                                                 </div>
                                             </div>
@@ -293,7 +311,7 @@
                                                 <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                                     Channel View
                                                 </div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <div class="h5 mb-0 font-weight-bold text-gary-200">
                                                     {{$viewCount}} views
                                                 </div>
                                             </div>
@@ -312,7 +330,7 @@
                                                 <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                                     Video QTY
                                                 </div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <div class="h5 mb-0 font-weight-bold text-gary-200">
                                                     {{$uploadsCount}} video
                                                 </div>
                                             </div>
@@ -331,7 +349,7 @@
                                                 <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                                     Short QTY
                                                 </div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <div class="h5 mb-0 font-weight-bold text-gary-200">
                                                     {{$hiddenSubscriberCount}} Short
                                                 </div>
                                             </div>
@@ -347,149 +365,127 @@
                         <!-- Content Row -->
     
                         <div class="row">
-                            <!-- Area Chart -->
-                            <div class="col-xl-8 col-lg-7">
+                            <div class="col-12">
                                 <div class="card shadow mb-4">
                                     <!-- Card Header - Dropdown -->
-                                    <div
-                                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                        <h6 class="m-0 font-weight-bold text-primary">
+                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                        <h6 class="m-0 font-weight-bold text-white">
                                             Earnings Overview
                                         </h6>
-                                        <div class="dropdown no-arrow">
-                                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                                aria-labelledby="dropdownMenuLink">
-                                                <div class="dropdown-header">Dropdown Header:</div>
-                                                <a class="dropdown-item" href="#">Action</a>
-                                                <a class="dropdown-item" href="#">Another action</a>
-                                                <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item" href="#">Something else here</a>
-                                            </div>
-                                        </div>
                                     </div>
                                     <!-- Card Body -->
                                     <div class="card-body">
                                         <div class="chart-area">
                                             <canvas id="myAreaChart"></canvas>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-    
-                            <!-- Pie Chart -->
-                            <div class="col-xl-4 col-lg-5">
-                                <div class="card shadow mb-4">
-                                    <!-- Card Header - Dropdown -->
-                                    <div
-                                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                        <h6 class="m-0 font-weight-bold text-primary">
-                                            Revenue Sources
-                                        </h6>
-                                        <div class="dropdown no-arrow">
-                                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                                aria-labelledby="dropdownMenuLink">
-                                                <div class="dropdown-header">Dropdown Header:</div>
-                                                <a class="dropdown-item" href="#">Action</a>
-                                                <a class="dropdown-item" href="#">Another action</a>
-                                                <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item" href="#">Something else here</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Card Body -->
-                                    <div class="card-body">
-                                        <div class="chart-pie pt-4 pb-2">
-                                            <canvas id="myPieChart"></canvas>
+                                        <div class="mt-4">
+                                            <label for="yearSelect">Select Year:</label>
+                                            <select id="yearSelect" class="form-control" style="background-color: #333; color: #fff;">
+                                                @foreach ($years as $year)
+                                                <option value="{{ $year }}">{{ $year }}</option>
+                                            @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-    
                         <!-- Content Row -->
                         <div class="row">
+                            <div class="col-lg-6 mb-4">
+                                <!-- Project Card Example -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-white">Store QTY</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        @foreach ($storeQuantities->sortByDesc(function ($item, $key) {
+                                            return $item;
+                                        }) as $key => $item)
+                                            <h4 class="small font-weight-bold">
+                                                {{ $key }} <span class="float-right">{{ number_format($item) }}</span>
+                                            </h4>
+                                            <div class="progress mb-4">
+                                                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ ($item / $totalQuantities) * 100 }}% "
+                                                    aria-valuenow="{{ $item }}" aria-valuemin="0" aria-valuemax="3"></div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
                             <!-- Content Column -->
                             <div class="col-lg-6 mb-4">
                                 <!-- Project Card Example -->
                                 <div class="card shadow mb-4">
                                     <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
+                                        <h6 class="m-0 font-weight-bold text-white">Store Profit $</h6>
                                     </div>
                                     <div class="card-body">
-                                        <h4 class="small font-weight-bold">
-                                            قلبي يحبك <span class="float-right">88%</span>
-                                        </h4>
-                                        <div class="progress mb-4">
-                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 88%"
-                                                aria-valuenow="88" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small font-weight-bold">
-                                            تريد نرجع <span class="float-right">11%</span>
-                                        </h4>
-                                        <div class="progress mb-4">
-                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 11%"
-                                                aria-valuenow="11" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small font-weight-bold">
-                                            مشكلتي <span class="float-right">6%</span>
-                                        </h4>
-                                        <div class="progress mb-4">
-                                            <div class="progress-bar" role="progressbar" style="width: 6%" aria-valuenow="6"
-                                                aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small font-weight-bold">
-                                            حياتي مبهدله <span class="float-right">
-                                                < 2%</span> </h4> <div class="progress mb-4">
-                                                    <div class="progress-bar bg-info" role="progressbar" style="width: 2%"
-                                                        aria-valuenow="2" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
+                                        @foreach ($storeEarning->sortByDesc(function ($item, $key) {
+                                            return $item;
+                                        }) as $key => $item)
                                             <h4 class="small font-weight-bold">
-                                                ابشرك <span class="float-right">
-                                                    < 2%</span> </h4> <div class="progress">
-                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 2%"
-                                                            aria-valuenow="2" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small font-weight-bold mt-4">
-                                            بلا مطرود <span class="float-right">
-                                                < 1%</span> </h4> <div class="progress mb-4">
-                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 1%"
-                                                        aria-valuenow="1" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small font-weight-bold">
-                                            بغيابك <span class="float-right">
-                                                < 1%</span> </h4> <div class="progress mb-4">
-                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 1%"
-                                                        aria-valuenow="1" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small font-weight-bold">
-                                            اتبوس ايدينا <span class="float-right">
-                                                < 1%</span> </h4> <div class="progress mb-4">
-                                                    <div class="progress-bar" role="progressbar" style="width: 1%" aria-valuenow="1"
-                                                        aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <h4 class="small font-weight-bold">
-                                            العلاسة <span class="float-right">
-                                                < 1%</span> </h4> <div class="progress mb-4">
-                                                    <div class="progress-bar bg-info" role="progressbar" style="width: 1%" aria-valuenow="1"
-                                                        aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
+                                                {{ $key }} <span class="float-right">${{ number_format($item) }}</span>
+                                            </h4>
+                                            <div class="progress mb-4">
+                                                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ ($item / intval($earningsSum)) * 100 }}%"
+                                                    aria-valuenow="{{ $item }}" aria-valuemin="0" aria-valuemax="3"></div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                            <div class="col-lg-6 mb-4">
+                                <!-- Project Card Example -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-white">Song QTY</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        @foreach ($songQuantities->sortByDesc(function ($item, $key) {
+                                            return $item;
+                                        }) as $key => $item)
+                                            <h4 class="small font-weight-bold">
+                                                {{ $key }} <span class="float-right">{{ number_format($item) }}</span>
+                                            </h4>
+                                            <div class="progress mb-4">
+                                                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ ($item / intval($totalQuantities)) * 100 }}%"
+                                                    aria-valuenow="{{ $item }}" aria-valuemin="0" aria-valuemax="3"></div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-4">
+                                <!-- Project Card Example -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-white">Song Profite $</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        @foreach ($songEarning->sortByDesc(function ($item, $key) {
+                                            return $item;
+                                        }) as $key => $item)
+                                            <h4 class="small font-weight-bold">
+                                                {{ $key }} <span class="float-right">{{ number_format($item) }}</span>
+                                            </h4>
+                                            <div class="progress mb-4">
+                                                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ ($item / intval($earningsSum)) * 100 }}%"
+                                                    aria-valuenow="{{ $item }}" aria-valuemin="0" aria-valuemax="3"></div>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
     
-                            <div class="col-lg-6 mb-4">
+                            <div class="col-lg-12 mb-4">
                                 <!-- Illustrations -->
                                 <div class="card shadow mb-4">
                                     <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">
+                                        <h6 class="m-0 font-weight-bold text-white">
                                             Illustrations
                                         </h6>
                                     </div>
@@ -544,7 +540,7 @@
                                 <!-- Approach -->
                                 <div class="card shadow mb-4">
                                     <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">
+                                        <h6 class="m-0 font-weight-bold text-white">
                                             Development Approach
                                         </h6>
                                     </div>
@@ -597,4 +593,130 @@
         <!-- /.container-fluid -->
                </div>
                   <!-- End of Main Content -->
+
+            
+                  <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+
+                      var ctx = document.getElementById("myAreaChart");
+                      var myLineChart;
+                  
+                      function updateChart(yearData) {
+                          if (myLineChart) {
+                              myLineChart.destroy();
+                          }
+                  
+                          myLineChart = new Chart(ctx, {
+                              type: "line",
+                              data: {
+                                  labels: [
+                                      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                                  ],
+                                  datasets: [
+                                      {
+                                          label: "Earnings",
+                                          lineTension: 0.3,
+                                          backgroundColor: "#cc002211",
+                                          borderColor: "#cc0022",
+                                          pointRadius: 3,
+                                          pointBackgroundColor: "#fff",
+                                          pointBorderColor: "#fff",
+                                          pointHoverRadius: 3,
+                                          pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                                          pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                                          pointHitRadius: 10,
+                                          pointBorderWidth: 2,
+                                          data: yearData,
+                                      },
+                                  ],
+                              },
+                              options: {
+                                  maintainAspectRatio: false,
+                                  layout: {
+                                      padding: {
+                                          left: 10,
+                                          right: 25,
+                                          top: 25,
+                                          bottom: 0,
+                                      },
+                                  },
+                                  scales: {
+                                      xAxes: [
+                                          {
+                                              gridLines: {
+                                                  display: false,
+                                                  drawBorder: false,
+                                              },
+                                              ticks: {
+                                                  fontColor: "white",
+                                                  maxTicksLimit: 12,
+                                              },
+                                          },
+                                      ],
+                                      yAxes: [
+                                          {
+                                              ticks: {
+                                                  maxTicksLimit: 5,
+                                                  padding: 10,
+                                                  fontColor: "white",
+                                                  // Include a dollar sign in the ticks
+                                                  callback: function (value, index, values) {
+                                                      return "$" + value;
+                                                  },
+                                              },
+                                              gridLines: {
+                                                  color: "rgb(234, 236, 244)",
+                                                  zeroLineColor: "rgb(234, 236, 244)",
+                                                  drawBorder: false,
+                                                  borderDash: [2],
+                                                  zeroLineBorderDash: [2],
+                                              },
+                                          },
+                                      ],
+                                  },
+                                  legend: {
+                                      display: false,
+                                  },
+                                  tooltips: {
+                                      backgroundColor: "#333",
+                                      bodyFontColor: "#eee",
+                                      titleMarginBottom: 10,
+                                      titleFontColor: "#eee",
+                                      titleFontSize: 14,
+                                      borderColor: "#eee",
+                                      borderWidth: 1,
+                                      xPadding: 15,
+                                      yPadding: 15,
+                                      displayColors: false,
+                                      intersect: false,
+                                      mode: "index",
+                                      caretPadding: 10,
+                                      callbacks: {
+                                          label: function (tooltipItem, chart) {
+                                              var datasetLabel =
+                                                  chart.datasets[tooltipItem.datasetIndex].label || "";
+                                              return datasetLabel + ": $" + tooltipItem.yLabel;
+                                          },
+                                      },
+                                  },
+                              },
+                          });
+                      }
+                  
+                      // Initialize the chart with the first year's data
+    var sortedData = {!! json_encode($sortedData) !!};
+    var years = Object.keys(sortedData);
+    updateChart(sortedData[years[0]]);
+
+    // Add event listener for year selection
+    document.getElementById("yearSelect").addEventListener("change", function () {
+      var selectedYear = this.value;
+      var selectedYearData = sortedData[selectedYear] || [];
+      updateChart(selectedYearData);
+    });
+  });
+                  </script>
+                  
+{{-- @endsection --}}
 @endsection

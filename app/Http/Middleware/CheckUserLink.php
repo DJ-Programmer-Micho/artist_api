@@ -26,6 +26,8 @@ class CheckUserLink
                 return new RedirectResponse('/login'); // Replace '/' with the URL of your home page
             }
         }
+        view()->share('artist', $artist->name);
+
         return $next($request);
     }
 }
