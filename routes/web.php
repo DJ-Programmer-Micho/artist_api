@@ -32,4 +32,12 @@ Route::prefix('/{artist}')->middleware(['checkStatus', 'artist', 'checkUser'])->
     Route::get('/content', [ArtistController::class, 'content'])->name('artist.content');
 });
 
+// Route::group(['middleware' => 'auth'], function () {
+//     // Routes that require authentication
+//     Route::prefix('/{artist}')->middleware(['checkStatus', 'artist', 'checkUser'])->group(function () {
+//         Route::get('/', [ArtistController::class, 'test'])->name('artist.dashboard');
+//         Route::get('/content', [ArtistController::class, 'content'])->name('artist.content');
+//     });
+// });
+
 Route::get('sheet',[GoogleSheetController::class, 'index']);

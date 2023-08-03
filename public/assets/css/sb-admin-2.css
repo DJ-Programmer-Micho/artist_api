@@ -11959,7 +11959,13 @@ body.sidebar-toggled footer.sticky-footer {
 
 .card.hovercard .cardheader {
     background-size: cover;
-    height: 175px;
+    height: 375px;
+}
+
+@media (max-width: 768px) {
+    .card.hovercard .cardheader {
+        height: 90px; /* Adjust the desired height for phone size */
+    }
 }
 
 .card.hovercard .avatar {
