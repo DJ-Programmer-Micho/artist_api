@@ -2,7 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\UserArtistController;
+use App\Http\Controllers\UserProfitController;
 use App\Http\Controllers\GoogleSheetController;
 
 /*
@@ -26,12 +29,20 @@ Route::get('/login', [AuthController::class,'index'])->name('login');
 Route::post('/login', [AuthController::class,'login'])->name('logging');
 Route::get('/logout', [AuthController::class,'logout'])->name('logout');
 
+Route::prefix('/user101')->middleware(['checkStatus', 'superadmin'])->group(function () {
+    Route::get('/', [OwnerController::class, 'index'])->name('owner.dashboard');
+    Route::get('/artists', [UserArtistController::class, 'index'])->name('owner.artists');
+    Route::get('/profits', [UserProfitController::class, 'index'])->name('owner.profits');
+    // Route::get('/payment', [OwnerController::class, 'payment'])->name('owner.payment');
+});
+
 
 Route::prefix('/{artist}')->middleware(['checkStatus', 'artist', 'checkUser'])->group(function () {
     Route::get('/', [ArtistController::class, 'test'])->name('artist.dashboard');
     Route::get('/content', [ArtistController::class, 'content'])->name('artist.content');
     Route::get('/payment', [ArtistController::class, 'payment'])->name('artist.payment');
 });
+
 
 // Route::group(['middleware' => 'auth'], function () {
 //     // Routes that require authentication

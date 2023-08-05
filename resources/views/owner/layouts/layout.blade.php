@@ -13,7 +13,7 @@
     <meta name="author" content="MET IRAQ" />
     <meta name="description" content="Content managers are prohibited from engaging in practices that attempt to go around or interfere with YouTube’s systems, processes, or policies." />
 
-    <title>Youtube CMS</title>
+    <title>Youtube CMS | Admin</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{asset('assets/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css" />
@@ -83,8 +83,8 @@
             <hr class="sidebar-divider my-0" />
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item {{ request()->is($artist) ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('artist.dashboard', ['artist' => $artist]) }}">
+            <li class="nav-item {{ request()->is('/user101') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('owner.dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -92,14 +92,28 @@
 
             <!-- Divider -->
             <hr class="sidebar-divider" />
-
-            <!-- Heading -->
             <div class="sidebar-heading">Table</div>
+            
+            <li class="nav-item {{ request()->is('/user101/artists') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('owner.artists') }}">
+                    <i class="fas fa-fw fa-user-alt"></i>
+                    <span>Artists</span>
+                </a>
+            </li>
 
-            <li class="nav-item {{ request()->is($artist . '/content') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('artist.content', ['artist' => $artist]) }}">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Content</span>
+            <li class="nav-item {{ request()->is('/user101/profits') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('owner.profits') }}">
+                    <i class="fas fa-wallet"></i>
+                    <span>Artists Profit</span>
+                </a>
+            </li>
+            <!-- Heading -->
+            {{-- <div class="sidebar-heading">Table</div>
+
+            <li class="nav-item {{ request()->is('/user101') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('owner.dashboard') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
                 </a>
             </li>
             <!-- Divider -->
@@ -113,7 +127,7 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>Payment</span>
                 </a>
-            </li>
+            </li> --}}
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block" />

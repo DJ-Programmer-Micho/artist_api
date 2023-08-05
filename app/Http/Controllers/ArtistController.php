@@ -22,8 +22,8 @@ class ArtistController extends Controller
         $userData = Auth::user();
         $google_id =  $userData->profile->g_id;
         $Sheet_ids =  json_decode($userData->profile->s_id, true);
-        $tax =  'sh0';
         $channel_id =$userData->profile->c_id;
+        $tax =  'sh0';
         $apiKey = env('YOUTUBE_API_V4');
         $profit =  0.6;
 
@@ -45,11 +45,6 @@ class ArtistController extends Controller
                 $sheetsData[$sheetName] = collect($rows);
             }
 
-   
-
-           
-
-            
             // Merge data from all sheets into one collection
             $mergedData = new Collection();
             $header = null;

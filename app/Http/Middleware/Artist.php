@@ -25,7 +25,7 @@ class Artist
         }
         $user = Auth::user();
         if($user->role == 1){
-            return redirect('/met');
+            return redirect('/user101');
         }
     }
 }
