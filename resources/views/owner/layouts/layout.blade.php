@@ -107,6 +107,13 @@
                     <span>Artists Profit</span>
                 </a>
             </li>
+
+            <li class="nav-item {{ request()->is('/user101/exprite') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('owner.payment') }}">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Artists Expiration</span>
+                </a>
+            </li>
             <!-- Heading -->
             {{-- <div class="sidebar-heading">Table</div>
 

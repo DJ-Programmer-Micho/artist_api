@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\ArtistCardController;
 use App\Http\Controllers\UserArtistController;
 use App\Http\Controllers\UserProfitController;
 use App\Http\Controllers\GoogleSheetController;
@@ -33,6 +34,7 @@ Route::prefix('/user101')->middleware(['checkStatus', 'superadmin'])->group(func
     Route::get('/', [OwnerController::class, 'index'])->name('owner.dashboard');
     Route::get('/artists', [UserArtistController::class, 'index'])->name('owner.artists');
     Route::get('/profits', [UserProfitController::class, 'index'])->name('owner.profits');
+    Route::get('/expire', [ArtistCardController::class, 'index'])->name('owner.payment');
     // Route::get('/payment', [OwnerController::class, 'payment'])->name('owner.payment');
 });
 
@@ -40,6 +42,7 @@ Route::prefix('/user101')->middleware(['checkStatus', 'superadmin'])->group(func
 Route::prefix('/{artist}')->middleware(['checkStatus', 'artist', 'checkUser'])->group(function () {
     Route::get('/', [ArtistController::class, 'test'])->name('artist.dashboard');
     Route::get('/content', [ArtistController::class, 'content'])->name('artist.content');
+    Route::get('/payment', [ArtistController::class, 'payment'])->name('artist.payment');
     Route::get('/payment', [ArtistController::class, 'payment'])->name('artist.payment');
 });
 
