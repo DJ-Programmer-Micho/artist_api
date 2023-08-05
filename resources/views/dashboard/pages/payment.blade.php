@@ -1,6 +1,15 @@
 @extends('dashboard.layouts.layout')
 @section('content')
+<style>
+    table {
+    width: 100%;
+    border-collapse: collapse;
+    }
 
+    td.center {
+        text-align: center;
+    }
+</style>
 <div class="container-fluid">
     <div class="card hovercard mb-3">
         <div class="cardheader"
@@ -22,8 +31,8 @@
         </div>
     </div>
     <!-- Table to display data -->
-                                     
-    <form action="{{ route('artist.content', ['artist' => $artist]) }}" method="GET"
+
+    <form action="{{ route('artist.payment', ['artist' => $artist]) }}" method="GET"
         class="d-none d-sm-inline-block form-inline mr-auto my-2 my-md-0 mw-100 navbar-search">
         <div class="input-group">
             <input type="text" name="search" class="form-control bg-dark border-0 text-white" style="height: 32px;"
@@ -41,29 +50,40 @@
             <table class="table table-bordered table-dark ">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Sale Date</th>
-                        <th>Store</th>
-                        <th>Title</th>
-                        <th>Quantity</th>
-                        <th>Earnings (USD)</th>
+                        <th class="align-middle text-center">ID</th>
+                        <th class="align-middle text-center">Image</th>
+                        <th class="align-middle text-center">Title</th>
+                        <th class="align-middle text-center">Auto Renew</th>
+                        <th class="align-middle text-center">Status</th>
+                        <th class="align-middle text-center">Days Remaining</th>
+                        <th class="align-middle text-center">Last Payment</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($paginator as $index => $row)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $row['Sale Month'] }}</td>
-                        <td>{{ $row['Store'] }}</td>
-                        <td>{{ $row['Title'] }}</td>
-                        <td>{{ $row['Quantity'] }}</td>
-                        <td>{{'$'.$row['Earnings (USD)'] }}</td>
-                    </tr>
+                    @foreach ($songs as $index => $song)
+                        <tr>
+                            <td class="align-middle">{{ $index + 1 }}</td>
+                            <td class="align-middle text-center"><img src="https://lh3.googleusercontent.com/{{ $song['image'] }}" alt="https://lh3.googleusercontent.com/{{ $song['image'] }}" width="50"></td>
+                            <td class="align-middle text-center">{{ $song['title'] }}</td>
+                            <td class="align-middle text-center text-info">Auto</td>
+                            <td class="align-middle text-center">
+                                @if ($song['status'] === 'expiring_soon')
+                                    Expiring Soon
+                                @elseif ($song['status'] === 'expired')
+                                    <span class="text-danger">Expired</span>
+                                @elseif ($song['status'] === 'active')
+                                    <span class="text-success">Active</span>
+                                @endif
+                            </td>
+                            <td class="align-middle text-center">{{ $song['daysDifference'] }} days</td>
+                            <td class="align-middle text-center">{{ $song['cost'] }}</td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
+</div>
 
     <!-- Pagination links -->
     <div class="row">
@@ -72,21 +92,21 @@
                 <ul class="pagination justify-content-center pagination-sm d-flex">
                     {{-- Pagination Elements --}}
                     @php
-                    $currentPage = $paginator->currentPage();
-                    $lastPage = $paginator->lastPage();
+                    $currentPage = $songs->currentPage();
+                    $lastPage = $songs->lastPage();
                     $shift = 4; // Set a fixed shift value
                     $start = max(1, $currentPage - $shift);
                     $end = min($lastPage, $currentPage + $shift);
 
                     if ($end - $start + 1 < 2 * $shift + 1) { $start=max(1, $end - 2 * $shift); } if ($end - $start + 1
                         < 2 * $shift + 1) { $end=min($lastPage, $start + 2 * $shift); } @endphp
-                        {{-- Previous Page Link --}} @if ($paginator->onFirstPage())
+                        {{-- Previous Page Link --}} @if ($songs->onFirstPage())
                         <li class="page-item disabled  bg-dark text-white">
                             <span class="page-link" aria-hidden="true">&laquo;</span>
                         </li>
                         @else
                         <li class="page-item">
-                            <a class="page-link" href="{{ $paginator->previousPageUrl() }}" aria-label="Previous">
+                            <a class="page-link" href="{{ $songs->previousPageUrl() }}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
@@ -94,7 +114,7 @@
 
                         @if ($start > 1)
                         <li class="page-item">
-                            <a class="page-link" href="{{ $paginator->url(1) }}">1</a>
+                            <a class="page-link" href="{{ $songs->url(1) }}">1</a>
                         </li>
                         @if ($start > 2)
                         <li class="page-item disabled">
@@ -109,7 +129,7 @@
                             </li>
                             @else
                             <li class="page-item">
-                                <a class="page-link" href="{{ $paginator->url($i) }}">{{ $i }}</a>
+                                <a class="page-link" href="{{ $songs->url($i) }}">{{ $i }}</a>
                             </li>
                             @endif
                             @endfor
@@ -119,14 +139,14 @@
                                 </li>
                                 @endif
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ $paginator->url($lastPage) }}">{{ $lastPage }}</a>
+                                    <a class="page-link" href="{{ $songs->url($lastPage) }}">{{ $lastPage }}</a>
                                 </li>
                                 @endif
 
                                 {{-- Next Page Link --}}
-                                @if ($paginator->hasMorePages())
+                                @if ($songs->hasMorePages())
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ $paginator->nextPageUrl() }}" aria-label="Next">
+                                    <a class="page-link" href="{{ $songs->nextPageUrl() }}" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>
@@ -139,9 +159,4 @@
             </nav>
         </div>
     </div>
-</div>
-</div>
-</div>
-
-
 @endsection

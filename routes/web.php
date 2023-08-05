@@ -30,6 +30,7 @@ Route::get('/logout', [AuthController::class,'logout'])->name('logout');
 Route::prefix('/{artist}')->middleware(['checkStatus', 'artist', 'checkUser'])->group(function () {
     Route::get('/', [ArtistController::class, 'test'])->name('artist.dashboard');
     Route::get('/content', [ArtistController::class, 'content'])->name('artist.content');
+    Route::get('/payment', [ArtistController::class, 'payment'])->name('artist.payment');
 });
 
 // Route::group(['middleware' => 'auth'], function () {

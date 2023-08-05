@@ -5,6 +5,11 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="shortcut icon" href="https://www.youtube.com/s/desktop/0e9d1cf9/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://www.youtube.com/s/desktop/0e9d1cf9/img/favicon_32x32.png" sizes="32x32">
+    <link rel="icon" href="https://www.youtube.com/s/desktop/0e9d1cf9/img/favicon_48x48.png" sizes="48x48">
+    <link rel="icon" href="https://www.youtube.com/s/desktop/0e9d1cf9/img/favicon_96x96.png" sizes="96x96">
+    <link rel="icon" href="https://www.youtube.com/s/desktop/0e9d1cf9/img/favicon_144x144.png" sizes="144x144">
     <meta name="description" content="" />
     <meta name="author" content="" />
 
@@ -18,7 +23,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{{asset('assets/css/sb-admin-2.css')}}" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
 </head>
 
 
@@ -97,6 +102,18 @@
                     <span>Content</span>
                 </a>
             </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider" />
+
+            <!-- Heading -->
+            <div class="sidebar-heading">Financial</div>
+
+            <li class="nav-item {{ request()->is($artist . '/payment') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('artist.payment', ['artist' => $artist]) }}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Payment</span>
+                </a>
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block" />
@@ -116,58 +133,16 @@
                     <!-- Topbar -->
                     <nav class="navbar navbar-expand navbar-dark bg-gradient-yt-dark-r topbar mb-4 static-top shadow">
                         <!-- Sidebar Toggle (Topbar) -->
-                        <form class="form-inline">
-                            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        {{-- <form class="form-inline"> --}}
+                            <button id="sidebarToggleTop" class="btn btn-danger text-white d-md-none mr-3">
                                 <i class="fa fa-bars"></i>
                             </button>
-                        </form>
+                        {{-- </form> --}}
     
-                                        <!-- Topbar Search -->
-                                        <!-- <form
-                                class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
-                                >
-                                <div class="input-group">
-                                    <input
-                                    type="text"
-                                    class="form-control bg-light border-0 small"
-                                    placeholder="Search for..."
-                                    aria-label="Search"
-                                    aria-describedby="basic-addon2"
-                                    />
-                                    <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button">
-                                        <i class="fas fa-search fa-sm"></i>
-                                    </button>
-                                    </div>
-                                </div>
-                                </form> -->
-    
+
                         <!-- Topbar Navbar -->
                         <ul class="navbar-nav ml-auto">
-                            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                            <li class="nav-item dropdown no-arrow d-sm-none">
-                                <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-search fa-fw"></i>
-                                </a>
-                                <!-- Dropdown - Messages -->
-                                <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                    aria-labelledby="searchDropdown">
-                                    <form class="form-inline mr-auto w-100 navbar-search">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control bg-light border-0 small"
-                                                placeholder="Search for..." aria-label="Search"
-                                                aria-describedby="basic-addon2" />
-                                            <div class="input-group-append">
-                                                <button class="btn btn-primary" type="button">
-                                                    <i class="fas fa-search fa-sm"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </li>
-    
+
                             <!-- Nav Item - Alerts -->
                             <li class="nav-item dropdown no-arrow mx-1">
                                 <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
@@ -179,19 +154,9 @@
                                 <!-- Dropdown - Alerts -->
                                 <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                     aria-labelledby="alertsDropdown">
-                                    <h6 class="dropdown-header">Alerts Center</h6>
-                                    <a class="dropdown-item d-flex align-items-center" href="#">
-                                        <div class="mr-3">
-                                            <div class="icon-circle bg-primary">
-                                                <i class="fas fa-file-alt text-white"></i>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="small text-gray-500">June 16, 2023</div>
-                                            <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                                        </div>
-                                    </a>
-                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <h6 class="dropdown-header bg-dark">Alerts Center</h6>
+
+                                    {{-- <a class="dropdown-item d-flex align-items-center" href="#">
                                         <div class="mr-3">
                                             <div class="icon-circle bg-primary">
                                                 <i class="fas fa-file-alt text-white"></i>
@@ -201,8 +166,8 @@
                                             <div class="small text-gray-500">May 14, 2023</div>
                                             <span class="font-weight-bold">A new monthly report is ready to download!</span>
                                         </div>
-                                    </a>
-                                    <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                                    </a> --}}
+                                    <a class="dropdown-item text-center small text-dark" href="#">No Notifications</a>
                                 </div>
                             </li>
     
@@ -217,7 +182,7 @@
                                 <!-- Dropdown - Messages -->
                                 <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                     aria-labelledby="messagesDropdown">
-                                    <h6 class="dropdown-header">Message Center</h6>
+                                    <h6 class="dropdown-header bg-dark">Message Center</h6>
                                     <a class="dropdown-item d-flex align-items-center" href="#">
                                         <div class="dropdown-list-image mt-3 mr-3">
                                             <i class="far fa-envelope fa-2x text-gray-300"></i>
@@ -239,28 +204,17 @@
                             <li class="nav-item dropdown no-arrow">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">MET IRAQ</span>
+                                    <span class="mr-2 d-none d-lg-inline text-white small">MET IRAQ</span>
                                     <img class="img-profile rounded-circle" src="https://i.ibb.co/PrD6md2/MET-Circle.png" />
                                 </a>
                                 <!-- Dropdown - User Information -->
-                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in text-white bg-dark"
                                     aria-labelledby="userDropdown">
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Profile
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Settings
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Activity Log
-                                    </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Logout
+
+                                    {{-- <div class="dropdown-divider"></div> --}}
+                                    <a class="dropdown-item" href="{{route('logout')}}" data-toggle="modal" data-target="#logoutModal">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-white">  Logout</i>
+                                      
                                     </a>
                                 </div>
                             </li>
@@ -323,13 +277,13 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{asset('assets/js/sb-admin-2.min.js')}}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Page level plugins -->
-    <script src="{{asset('assets/vendor/chart.js/Chart.min.js')}}"></script>
+    {{-- <script src="{{asset('assets/vendor/chart.js/Chart.min.js')}}"></script> --}}
 
     <!-- Page level custom scripts -->
-    <script src="{{asset('assets/js/demo/chart-area-demo.js')}}"></script>
-    <script src="{{asset('assets/js/demo/chart-pie-demo.js')}}"></script>
+    {{-- <script src="{{asset('assets/js/demo/chart-area-demo.js')}}"></script> --}}
+    {{-- <script src="{{asset('assets/js/demo/chart-pie-demo.js')}}"></script> --}}
  
 </body>
 

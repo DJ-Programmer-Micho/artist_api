@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Revolution\Google\Sheets\Sheets;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Carbon\Carbon;
 
 class ArtistController extends Controller
 {
@@ -21,6 +22,7 @@ class ArtistController extends Controller
         $userData = Auth::user();
         $google_id =  $userData->profile->g_id;
         $Sheet_ids =  json_decode($userData->profile->s_id, true);
+        $tax =  'sh0';
         $channel_id =$userData->profile->c_id;
         $apiKey = env('YOUTUBE_API_V4');
         $profit =  0.6;
@@ -42,6 +44,11 @@ class ArtistController extends Controller
                 $rows = $sheets->spreadsheet($google_id)->range($range)->get();
                 $sheetsData[$sheetName] = collect($rows);
             }
+
+   
+
+           
+
             
             // Merge data from all sheets into one collection
             $mergedData = new Collection();
@@ -154,6 +161,13 @@ class ArtistController extends Controller
         $customUrl = $data['items'][0]['snippet']['customUrl'];
         $country = $data['items'][0]['snippet']['country'];
 
+        $sheetTax = new Sheets();
+        $range = $tax.'!N3'; // Specify the range with sheet name
+        $dataTax = $sheetTax->spreadsheet($google_id)->range($range)->get();
+        
+        $taxValue = $dataTax[0][0]; // Assuming $dataTax is an array with at least one element
+        $wallet = $totalEarnings - $taxValue;
+
         return view('dashboard.pages.dashboard',
         [
             'channelName' =>  $channelName, 
@@ -167,6 +181,8 @@ class ArtistController extends Controller
             'uploadsCount'=>$uploadsCount, 
             'hiddenSubscriberCount'=>$hiddenSubscriberCount, 
             'earningsSum' => $totalEarnings,
+            'dataTax' => $dataTax[0],
+            'wallet' => $wallet,
             'storeQuantities' => $storeQuantities,
             'totalQuantities' => $totalQuantity,
             'storeEarning' => $storeEarning,
@@ -288,4 +304,180 @@ class ArtistController extends Controller
             'description' => $description,
         ]);
     }
+
+
+    public function payment(Request $request){
+        // Check if the user is authenticated
+        if (!Auth::check()) {
+            return redirect('/login');
+        }        
+
+        $userData = Auth::user();
+        $google_id =  $userData->profile->g_id;
+        $Sheet_ids =  ["sh0"];
+        $channel_id =$userData->profile->c_id;
+        $apiKey = env('YOUTUBE_API_V4');
+        $profit =  0.6;
+
+        $cacheKey = 'google_sheets_data_payment';
+        $cacheDuration = now()->addHour(); // Cache duration: 1 hour
+
+        $cacheDataPatyment = Cache::remember($cacheKey, $cacheDuration, function () use ($google_id, $Sheet_ids) {
+            $sheetsData = [];
+            $sheets = new Sheets();
+
+            foreach ($Sheet_ids as $sheetName) {
+                $range = $sheetName.'!F2:K'; // Specify the range with sheet name
+                $rows = $sheets->spreadsheet($google_id)->range($range)->get();
+                $sheetsData[$sheetName] = collect($rows);
+            }
+            
+            // Merge data from all sheets into one collection
+            $mergedData = new Collection();
+            $header = null;
+            foreach ($sheetsData as $sheetData) {
+                if (!$sheetData->isEmpty()) {
+                    if ($header === null) {
+                        $header = $sheetData->pull(0);
+                    }
+                    $mergedData = $mergedData->merge($sheetData);
+                }
+            }
+            // Remove rows with the same values as the header
+            $mergedData = $mergedData->filter(function ($row) use ($header) {
+                return $row !== $header;
+            });
+            
+            // Map the merged data to associate each row with the header names
+            $finalResult = $mergedData->map(function ($row) use ($header) {
+                return array_combine($header, $row);
+            });
+    
+            return $finalResult; // Return the fetched data
+        });
+
+        $currentDate = Carbon::now();
+        $songs = [];
+        
+        // Loop through the fetched data
+        foreach ($cacheDataPatyment as $data) {
+            $title = $data['Title'];
+            $updatedDate = Carbon::createFromFormat('Y-m-d', $data['Updated Date']);
+            $expireDate = Carbon::createFromFormat('Y-m-d', $data['Expire Date']);
+        
+            // Calculate the difference between the "Updated Date" and the current date
+            $updatedDaysDifference = $currentDate->diffInDays($updatedDate, false);
+        
+            // Calculate the difference between the "Expire Date" and the current date
+            $expireDaysDifference = $currentDate->diffInDays($expireDate, false);
+        
+            // Check if the song is already in the $songs array based on its title
+            // and get the index of the existing song if found
+            $existingSongIndex = collect($songs)->search(function ($song) use ($title) {
+                return $song['title'] === $title;
+            });
+        
+            if ($existingSongIndex !== false) {
+                // If the song exists, check if the current entry has a later "Updated Date"
+                $existingSong = $songs[$existingSongIndex];
+                $existingUpdatedDate = Carbon::createFromFormat('Y-m-d', $existingSong['updated_date']);
+        
+                // If the current entry has a later "Updated Date", update the song in the $songs array
+                if ($updatedDate->greaterThan($existingUpdatedDate)) {
+                    $songs[$existingSongIndex] = [
+                        'image' => $data['Image'],
+                        'title' => $title,
+                        'status' => 'active',
+                        'daysDifference' => $expireDaysDifference,
+                        'updated_date' => $data['Updated Date'],
+                        'cost' => $data['Cost'],
+                    ];
+                }
+            } else {
+                // If the song is not found in the $songs array, add it as a new entry
+                $songs[] = [
+                    'image' => $data['Image'],
+                    'title' => $title,
+                    'status' => 'active',
+                    'daysDifference' => $expireDaysDifference,
+                    'updated_date' => $data['Updated Date'],
+                    'cost' => $data['Cost'],
+                ];
+            }
+        }
+        
+        // Check if any song in the $songs array should be marked as "expired" or "expiring_soon"
+        foreach ($songs as &$song) {
+            if ($song['daysDifference'] > 0 && $song['daysDifference'] <= 7) {
+                $song['status'] = 'expiring_soon';
+            } elseif ($song['daysDifference'] <= 0) {
+                $song['status'] = 'expired';
+                $song['daysDifference'] = $song['daysDifference'];
+            }
+        }
+        
+        // Sort the $songs array based on the status and days remaining
+        usort($songs, function ($a, $b) {
+            $statusOrder = ['expired', 'expiring_soon', 'active'];
+            $statusComparison = array_search($a['status'], $statusOrder) - array_search($b['status'], $statusOrder);
+        
+            if ($statusComparison !== 0) {
+                return $statusComparison;
+            }
+        
+            // If the status is the same, sort by days remaining
+            return $a['daysDifference'] - $b['daysDifference'];
+        });
+
+        $searchQuery = $request->input('search');
+
+        $filteredData = $searchQuery
+        ? collect($songs)->filter(function ($song) use ($searchQuery) {
+            return stripos($song['title'], $searchQuery) !== false;
+        })
+        : collect($songs);
+
+        $perPage = 15; // Adjust the number of songs per page as needed.
+        $currentPage = request()->query('page', 1);
+        $paginatedData = $filteredData->forPage($currentPage, $perPage);
+        $totalItems = $filteredData->count();
+
+        $paginator = new LengthAwarePaginator(
+            $paginatedData,
+            $totalItems,
+            $perPage,
+            $currentPage,
+            [
+                'path' => request()->url(),
+                'query' => request()->query(),
+            ]
+        );
+        
+        $apiUrl = 'https://www.googleapis.com/youtube/v3/channels?part=snippet,contentDetails,statistics,brandingSettings&id=' . $channel_id . '&key=' . $apiKey;
+        $response = file_get_contents($apiUrl);
+        if ($response === false) {
+            die('Failed to fetch data from YouTube API.');
+        }
+        // dd($response);
+        $data = json_decode($response, true);
+        if (!isset($data['items']) || empty($data['items'])) {
+            die('Invalid API response. Unable to fetch channel data.');
+        }
+        $channelName = $data['items'][0]['snippet']['title'];
+        $thumbnails = $data['items'][0]['snippet']['thumbnails']['medium']['url'];
+        $bannerImageUrl = $data['items'][0]['brandingSettings']['image']['bannerExternalUrl'];
+        $description = $data['items'][0]['snippet']['description'];
+        $customUrl = $data['items'][0]['snippet']['customUrl'];
+        $country = $data['items'][0]['snippet']['country'];
+
+        return view('dashboard.pages.payment', [
+            'channelName' =>  $channelName, 
+            'thumbnails'=> $thumbnails,
+            'bannerImageUrl' => $bannerImageUrl.'=w2120-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj',
+            'customUrl' => $customUrl,
+            'country' => $country,
+            'description' => $description,
+            'songs' => $paginator,
+        ]);  
+    } 
 }
