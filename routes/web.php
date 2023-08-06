@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\ArtistController;
-use App\Http\Controllers\ArtistCardController;
+use App\Http\Controllers\ArtistPaymentController;
 use App\Http\Controllers\UserArtistController;
 use App\Http\Controllers\UserProfitController;
 use App\Http\Controllers\GoogleSheetController;
@@ -32,10 +32,22 @@ Route::get('/logout', [AuthController::class,'logout'])->name('logout');
 
 Route::prefix('/user101')->middleware(['checkStatus', 'superadmin'])->group(function () {
     Route::get('/', [OwnerController::class, 'index'])->name('owner.dashboard');
+    // USER ARTIST
     Route::get('/artists', [UserArtistController::class, 'index'])->name('owner.artists');
+    Route::get('/artists/create', [UserArtistController::class, 'create'])->name('owner.artists.create');
+    Route::post('/artists/create', [UserArtistController::class, 'add'])->name('owner.artists.add');
+    Route::get('/artists/edit/{id}', [UserArtistController::class, 'editUser'])->name('owner.artists.edit');
+    Route::post('/artists/edit/{id}', [UserArtistController::class, 'updateUser'])->name('owner.artists.update');
+    Route::get('/artists/{id}', [UserArtistController::class, 'deleteUser'])->name('owner.artists.delete');
+    // USER PROFIT
     Route::get('/profits', [UserProfitController::class, 'index'])->name('owner.profits');
-    Route::get('/expire', [ArtistCardController::class, 'index'])->name('owner.payment');
-    // Route::get('/payment', [OwnerController::class, 'payment'])->name('owner.payment');
+    Route::get('/profits/{id}', [UserProfitController::class, 'view'])->name('owner.profits.view');
+    Route::get('/profits/edit/{id}', [UserProfitController::class, 'editUser'])->name('owner.profits.edit');
+    Route::post('/profits/edit/{id}', [UserProfitController::class, 'update'])->name('owner.profits.update');
+    // USER PAYMENT
+    Route::get('/expire', [ArtistPaymentController::class, 'index'])->name('owner.expire');
+    Route::get('/expire/create', [ArtistPaymentController::class, 'create'])->name('owner.expire.create');
+    Route::post('/expire/create', [ArtistPaymentController::class, 'add'])->name('owner.expire.add');
 });
 
 

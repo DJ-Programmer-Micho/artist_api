@@ -11,26 +11,33 @@
     }
 </style>
 <div class="container-fluid">
-    <div class="d-none d-sm-inline-block form-inline mr-auto my-2 my-md-0 mw-100 navbar-search">
-
-        <form action="{{ route('owner.payment') }}" method="GET">
+    
+    <div class="d-flex justify-content-between">
+        <div>
+        <div class="d-none d-sm-inline-block form-inline mr-auto my-2 my-md-0 mw-100 navbar-search">
+        <form action="{{ route('owner.expire') }}" method="GET">
             <div class="input-group">
-            <select name="user" id="user" class="form-control bg-dark border-0 text-white">
-                
-                <option value="">Select a user</option>
-                @foreach ($users as $user)
-                <option value="{{ $user->id }}">{{ $user->name }}</option>
-                @endforeach
-            </select>
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-search fa-sm"></i>
-                </button>
+                <select name="user" id="user" class="form-control bg-dark border-0 text-white">
+
+                    <option value="">Select a user</option>
+                    @foreach ($users as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    @endforeach
+                </select>
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search fa-sm"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-</form>
-        
+        </form>
     </div>
+    </div>
+    <div>
+        <a href="{{route('owner.expire.add')}}" class="btn btn-success">+ Add New Song</a>
+     </div>
+</div>
+        
 
 
 
@@ -46,6 +53,7 @@
                         <th class="align-middle text-center">Status</th>
                         <th class="align-middle text-center">Days Remaining</th>
                         <th class="align-middle text-center">Last Payment</th>
+                        <th class="align-middle text-center">Update Payment</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,7 +65,7 @@
                             <td class="align-middle text-center text-info">Auto</td>
                             <td class="align-middle text-center">
                                 @if ($song['status'] === 'expiring_soon')
-                                    Expiring Soon
+                                    <span class="text-warning">Expiring Soon</span>
                                 @elseif ($song['status'] === 'expired')
                                     <span class="text-danger">Expired</span>
                                 @elseif ($song['status'] === 'active')
@@ -65,7 +73,12 @@
                                 @endif
                             </td>
                             <td class="align-middle text-center">{{ $song['daysDifference'] }} days</td>
-                            <td class="align-middle text-center">{{ $song['cost'] }}</td>
+                            <td class="align-middle text-center">$ {{ $song['cost'] }}</td>
+                            <td class="align-middle text-center">
+                                <a href="{{ url('/user101/artists/edit/'.$user->id) }}" class="btn btn-success m-1">
+                                    <i class="fas fa-vote-yea"></i>
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>

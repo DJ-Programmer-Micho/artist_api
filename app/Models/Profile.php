@@ -16,6 +16,7 @@ class Profile extends Model
         's_id',
         'c_id',
         'passport',
+        'profit',
         'phone',
     ];
 

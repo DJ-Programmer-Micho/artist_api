@@ -1,20 +1,28 @@
 @extends('owner.layouts.layout')
 @section('content')
 
-<div class="container-fluid">                                
-    <form action="{{ route('owner.artists')}}" method="GET"
-        class="d-none d-sm-inline-block form-inline mr-auto my-2 my-md-0 mw-100 navbar-search">
-        <div class="input-group">
-            <input type="text" name="search" class="form-control bg-dark border-0 text-white" style="height: 32px;"
-                placeholder="Search by store or title" aria-label="Search" aria-describedby="basic-addon2" />
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-search fa-sm"></i>
-                </button>
-            </div>
-        </div>
-    </form>
+<div class="container-fluid">        
+    <div class="d-flex justify-content-between">
+        <div>
 
+            <form action="{{ route('owner.artists')}}" method="GET"
+            class="d-none d-sm-inline-block form-inline mr-auto my-2 my-md-0 mw-100 navbar-search">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control bg-dark border-0 text-white" style="height: 32px;"
+                placeholder="Search by store or title" aria-label="Search" aria-describedby="basic-addon2" />
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search fa-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+       <a href="{{route('owner.artists.add')}}" class="btn btn-success">+ Add New Artist</a>
+    </div>
+    
+</div>                        
     <div class="row mt-3 overflow-auto">
         <div class="col-md-12">
             <table class="table table-bordered table-dark ">
@@ -41,21 +49,41 @@
                             </span>
                         </td>
                         <td>
-                            <button type="button" data-toggle="modal" data-target="#updateStudentModal"
-                                onclick="editStudent({{ $user->id }})" class="btn btn-primary m-1">
+                            <a href="{{ url('/user101/artists/edit/'.$user->id) }}" class="btn btn-primary m-1">
                                 <i class="far fa-edit"></i>
-                            </button>
-                            <button type="button" data-toggle="modal" data-target="#deleteStudentModal"
-                                onclick="deleteStudent({{ $user->id }})" class="btn btn-danger m-1">
+                            </a>
+                            <button type="button" class="btn btn-danger m-1" data-toggle="modal" data-target="#confirmDeleteModal{{ $user->id }}">
                                 <i class="far fa-trash-alt"></i>
-                            </button>
-                            <button type="button"
-                                onclick="updateStatus({{ $user->id }})"
-                                class="btn {{ $user->status == 1 ? 'btn-danger' : 'btn-success' }} m-1">
-                                <i class="far {{ $user->status == 1 ? 'fa-times-circle' : 'fa-check-circle' }}"></i>
                             </button>
                         </td>
                     </tr>
+
+                    <!-- Bootstrap modal -->
+
+                    <div class="modal fade" id="confirmDeleteModal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel{{ $user->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmDeleteModalLabel{{ $user->id }}">Confirm Deletion</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="user{{ $user->id }}">Enter the user's name ({{ $user->name }}) to confirm:</label>
+                                        <input type="text" class="form-control" id="user{{ $user->id }}" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-danger" onclick="checkAndDelete('{{ $user->name }}',{{ $user->id }})">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a id="deleteLink{{ $user->id }}" href="{{ url('/user101/artists/'.$user->id)  }}" style="display: hidden;"></a>
+
                     @endforeach
                 </tbody>
             </table>
@@ -140,5 +168,17 @@
 </div>
 </div>
 
+<script>
+    function checkAndDelete(name, userId) {
+        const enteredName = document.getElementById('user' + userId).value;
+        const userName = name;
 
+        if (enteredName.toLowerCase() === userName.toLowerCase()) {
+            const deleteLink = document.getElementById('deleteLink' + userId);
+            deleteLink.click();
+        } else {
+            alert('Incorrect user name. Please enter the correct name to confirm deletion.');
+        }
+    }
+</script>
 @endsection

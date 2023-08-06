@@ -5,7 +5,7 @@
     <form action="{{ route('owner.profits')}}" method="GET"
         class="d-none d-sm-inline-block form-inline mr-auto my-2 my-md-0 mw-100 navbar-search">
         <div class="input-group">
-            <input type="text" name="search" class="form-control bg-dark border-0 text-white" style="height: 32px;"
+            <input type="text" name="search" class="form-control bg-dark border-0 text-white"
                 placeholder="Search by store or title" aria-label="Search" aria-describedby="basic-addon2" />
             <div class="input-group-append">
                 <button class="btn btn-primary" type="submit">
@@ -14,6 +14,7 @@
             </div>
         </div>
     </form>
+
 
     <div class="row mt-3 overflow-auto">
         <div class="col-md-12">
@@ -24,11 +25,14 @@
                         <th class="align-middle">Name</th>
                         <th class="align-middle">Status</th>
                         <th class="align-middle">Profit</th>
+                        <th class="align-middle">%</th>
+                        <th class="align-middle">Wallet</th>
                         <th class="align-middle">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $index => $user)
+                    @if(!empty($users))
+                    @forelse ($users as $index => $user)
                     <tr>
                         <td class="align-middle">{{ $index + 1 }}</td>
                         <td class="align-middle">{{ $user->name }}</td>
@@ -38,23 +42,23 @@
                             </span>
                         </td>
                         <td class="align-middle text-success"><b>${{ $totalEarningsArray[$index] }}</b></td>
+                        <td class="align-middle text-warning"><b>{{ $user->profile->profit * 100}}%</b></td>
+                        <td class="align-middle text-{{ $wallet[$index] > 0 ? 'success' : 'danger' }}"><b>${{ $wallet[$index] }}</b></td>
                         <td class="align-middle">
-                            <button type="button"
-                                onclick="editStudent({{ $user->id }})" class="btn btn-primary m-1">
-                                <i class="far fa-edit"></i>
-                            </button>
-                            <button type="button"
-                                onclick="deleteStudent({{ $user->id }})" class="btn btn-info m-1">
+                            <a href="{{ url('/user101/profits/'.$user->id) }}" class="btn btn-info m-1">
                                 <i class="far fa-eye"></i>
-                            </button>
-                            <button type="button"
-                                onclick="updateStatus({{ $user->id }})"
-                                class="btn {{ $user->status == 1 ? 'btn-danger' : 'btn-success' }} m-1">
-                                <i class="far {{ $user->status == 1 ? 'fa-times-circle' : 'fa-check-circle' }}"></i>
-                            </button>
+                            </a>
+                            <a href="{{ url('/user101/profits/edit/'.$user->id) }}" class="btn btn-primary m-1">
+                                <i class="far fa-edit"></i>
+                            </a>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td>No Data</td>
+                    </tr>
+                    @endforelse
+                    @endif
                 </tbody>
             </table>
         </div>

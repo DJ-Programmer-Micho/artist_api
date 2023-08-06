@@ -109,7 +109,7 @@
             </li>
 
             <li class="nav-item {{ request()->is('/user101/exprite') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('owner.payment') }}">
+                <a class="nav-link" href="{{ route('owner.expire') }}">
                     <i class="fas fa-user-shield"></i>
                     <span>Artists Expiration</span>
                 </a>

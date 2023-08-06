@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
 
-class ArtistCardController extends Controller
+class ArtistPaymentController extends Controller
 {
     public function index(Request $request){
 
@@ -163,11 +163,79 @@ class ArtistCardController extends Controller
             );
 
         }
-        return view('owner.pages.payment', [
+        return view('owner.pages.payments.index', [
             'users' => $users,
             'songs' => $paginator,
         ]); 
     }
 
+    public function create(){
+
+        $users = User::get();
+
+        return view('owner.pages.payments.create', [
+            'users' => $users,
+        ]);
+    }
+
+    public function add(Request $request)
+    {
+
+        $request->validate([
+            'user' => 'required',
+            'title' => 'required|string|max:255',
+            'release' => 'required|date', // Assuming 'release' is a date field
+            'cost' => 'required|numeric|min:0', // Assuming 'cost' is a numeric field and must be non-negative
+            'image' => 'nullable|string|max:255',
+        ]);
+        
+
+        $user = $request->input('user');
+        
+        $profile = User::with('profile')->where('id', $user)->first();
+        
+        if ($profile) {
+            $google_id = $profile->profile->g_id;
+       
+
+        $title = $request->input('title');
+        $release = $request->input('release');
+        $expire = Carbon::parse($release)->addYearNoOverflow()->toDateString();
+        $cost = $request->input('cost');
+        $image = $request->input('image');
+
+
+        $sheets = new Sheets();
+        $mainRange = 'sh0!A2:D2';
+        $logRange = 'sh0!F2:K2';
+        $sheets->spreadsheet($google_id)->range($mainRange)->append([[$title,$release,(float)$cost,$image]]);
+        $sheets->spreadsheet($google_id)->range($logRange)->append([[$title,$release,$expire,'Automaic',(float)$cost,$image]]);
+
+        // return response()->json(['message' => 'User created with profile successfully']);
+        return redirect()->route('owner.expire');
+        } 
+        return redirect()->route('owner.expire');
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        $profile = User::with('profile')->where('id', $id)->first();
+        
+        if ($profile) {
+            $google_id = $profile->profile->g_id;
+       
+        $title = $request->input('title');
+        $release = $request->input('release');
+        $expire = Carbon::parse($release)->addYearNoOverflow()->toDateString();
+        $cost = $request->input('cost');
+        $image = $request->input('image');
+
+        $sheets = new Sheets();
+        $logRange = 'sh0!F2:K2';
+        $sheets->spreadsheet($google_id)->range($logRange)->append([[$title,$release,$expire,'Automaic',(float)$cost,$image]]);
+        
+        return redirect()->route('owner.expire');
+        } 
+    }
 
 }

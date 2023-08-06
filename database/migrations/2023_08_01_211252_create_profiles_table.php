@@ -16,8 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->unique('user_id');
             $table->string('g_id')->unique()->nullable();
-            $table->string('s_id')->unique()->nullable();
+            $table->string('s_id')->nullable();
             $table->string('c_id')->unique()->nullable();
+            $table->string('profit')->nullable();
             $table->string('passport')->unique()->nullable();
             $table->string('phone')->unique()->nullable();
             $table->timestamps();

@@ -25,7 +25,7 @@ class ArtistController extends Controller
         $channel_id =$userData->profile->c_id;
         $tax =  'sh0';
         $apiKey = env('YOUTUBE_API_V4');
-        $profit =  0.6;
+        $profit =  $userData->profile->profit;
 
        
         
@@ -160,8 +160,8 @@ class ArtistController extends Controller
         $range = $tax.'!N3'; // Specify the range with sheet name
         $dataTax = $sheetTax->spreadsheet($google_id)->range($range)->get();
         
-        $taxValue = $dataTax[0][0]; // Assuming $dataTax is an array with at least one element
-        $wallet = $totalEarnings - $taxValue;
+        $taxValue = isset($dataTax[0][0]) ? str_replace(',', '', $dataTax[0][0]) : '0';
+        $wallet = $totalEarnings - (float) $taxValue;
 
         return view('dashboard.pages.dashboard',
         [
@@ -200,7 +200,7 @@ class ArtistController extends Controller
         $Sheet_ids =  json_decode($userData->profile->s_id, true);
         $channel_id =$userData->profile->c_id;
         $apiKey = env('YOUTUBE_API_V4');
-        $profit =  0.6;
+        $profit = $userData->profile->profit;
 
             // Check if the data is already cached
         $cacheKey = 'google_sheets_data';

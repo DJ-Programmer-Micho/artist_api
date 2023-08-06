@@ -16,6 +16,8 @@ class CheckUserStatus
                 Auth::logout();
                 return redirect('/login')->with('error', 'Your account is inactive. Please contact the administrator.');
             }
+        } else {
+            return redirect('/login');
         }
 
         return $next($request);
