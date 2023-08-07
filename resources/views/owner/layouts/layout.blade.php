@@ -114,6 +114,13 @@
                     <span>Artists Expiration</span>
                 </a>
             </li>
+
+            <li class="nav-item {{ request()->is('/user101/reciept') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('owner.reciept') }}">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Artists Reciept</span>
+                </a>
+            </li>
             <!-- Heading -->
             {{-- <div class="sidebar-heading">Table</div>
 

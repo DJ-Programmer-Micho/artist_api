@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\ArtistPaymentController;
+use App\Http\Controllers\ArtistRecieptController;
 use App\Http\Controllers\UserArtistController;
 use App\Http\Controllers\UserProfitController;
 use App\Http\Controllers\GoogleSheetController;
@@ -48,6 +49,12 @@ Route::prefix('/user101')->middleware(['checkStatus', 'superadmin'])->group(func
     Route::get('/expire', [ArtistPaymentController::class, 'index'])->name('owner.expire');
     Route::get('/expire/create', [ArtistPaymentController::class, 'create'])->name('owner.expire.create');
     Route::post('/expire/create', [ArtistPaymentController::class, 'add'])->name('owner.expire.add');
+    Route::get('/expire/edit/{id}/{title}/{g_id}/{img}/{days}/{status}', [ArtistPaymentController::class, 'editPayment'])->name('owner.expire.edit');
+    Route::post('/expire/edit/', [ArtistPaymentController::class, 'updatePayment'])->name('owner.expire.update');
+    //USER RECIEPT
+    Route::get('/reciept', [ArtistRecieptController::class, 'index'])->name('owner.reciept');
+    Route::get('/reciept/create', [ArtistRecieptController::class, 'create'])->name('owner.reciept.create');
+    Route::post('/reciept/create', [ArtistRecieptController::class, 'add'])->name('owner.reciept.add');
 });
 
 
@@ -55,7 +62,7 @@ Route::prefix('/{artist}')->middleware(['checkStatus', 'artist', 'checkUser'])->
     Route::get('/', [ArtistController::class, 'test'])->name('artist.dashboard');
     Route::get('/content', [ArtistController::class, 'content'])->name('artist.content');
     Route::get('/payment', [ArtistController::class, 'payment'])->name('artist.payment');
-    Route::get('/payment', [ArtistController::class, 'payment'])->name('artist.payment');
+    Route::get('/reciept', [ArtistController::class, 'reciept'])->name('artist.reciept');
 });
 
 

@@ -70,7 +70,7 @@ class UserArtistController extends Controller
         ]);
 
         $sheets = new Sheets();
-        $range = 'sh0!U3';
+        $range = 'sh0!X3';
         $google_id = $request->input('g_id');
         $profit = $request->input('profit');
         $sheets->spreadsheet($google_id)->range($range)->update([[$profit]]);
@@ -97,6 +97,12 @@ class UserArtistController extends Controller
         }
         $sheetsString = json_encode($sh);
 
+        $sheets = new Sheets();
+        $range = 'sh0!X3';
+        $google_id = $request->input('g_id');
+        $profit = $request->input('profit');
+        $sheets->spreadsheet($google_id)->range($range)->update([[$profit]]);
+
         User::where('id',$id)->update([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
@@ -113,11 +119,6 @@ class UserArtistController extends Controller
             'profit' => $request->input('profit'),
         ]);
 
-        $sheets = new Sheets();
-        $range = 'sh0!U3';
-        $google_id = $request->input('g_id');
-        $profit = $request->input('profit');
-        $sheets->spreadsheet($google_id)->range($range)->update([[$profit]]);
 
         return redirect()->route('owner.artists')->with('success', 'Profile updated successfully.');
     }

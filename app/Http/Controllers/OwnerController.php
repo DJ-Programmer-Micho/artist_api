@@ -14,12 +14,85 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class OwnerController extends Controller
 {
     public function index(){
+        // Check if the user is authenticated
         if (!Auth::check()) {
             return redirect('/login');
         }        
 
-        return view('owner.pages.dashboard');
+        $google_id = '1PlVbc_A1HtVp2ZIB3JqKLNDOoWQlIq9yuS7DmvkGiIE';
+        $Sheet_ids = ['main'];
+        $cacheKey = 'google_sheets_data';
+        $cacheDuration = now()->addHour(); // Cache duration: 1 hour
+
+        // $cacheData = Cache::remember($cacheKey, $cacheDuration, function () use ($google_id, $Sheet_ids) {
+            $sheetsData = [];
+            $sheets = new Sheets();
+
+            foreach ($Sheet_ids as $sheetName) {
+                $range = 'main!B1:K2'; // Specify the range with sheet name
+                $rows = $sheets->spreadsheet($google_id)->range($range)->get();
+                $sheetsData[$sheetName] = collect($rows);
+            }
+            
+            $mergedData = new Collection();
+            $header = null;
+            foreach ($sheetsData as $sheetData) {
+                if (!$sheetData->isEmpty()) {
+                    if ($header === null) {
+                        $header = $sheetData->pull(0);
+                    }
+                    $mergedData = $mergedData->merge($sheetData);
+                }
+            }
+            
+            $mergedData = $mergedData->filter(function ($row) use ($header) {
+                return $row !== $header;
+            });
+            
+            $cards = $mergedData->map(function ($row) use ($header) {
+                return array_combine($header, $row);
+            });
+
+
+            foreach ($Sheet_ids as $sheetName_table) {
+                $range_table = 'main!A3:K'; // Specify the range with sheet name
+                $rows_table = $sheets->spreadsheet($google_id)->range($range_table)->get();
+                $sheetsData_table[$sheetName_table] = collect($rows_table);
+            }
+            
+            $mergedData_table = new Collection();
+            $header_table = null;
+            foreach ($sheetsData_table as $sheetData_table) {
+                if (!$sheetData_table->isEmpty()) {
+                    if ($header_table === null) {
+                        $header_table = $sheetData_table->pull(0);
+                    }
+                    $mergedData_table = $mergedData_table->merge($sheetData_table);
+                }
+            }
+            
+            $mergedData_table = $mergedData_table->filter(function ($row_table) use ($header_table) {
+                return $row_table !== $header_table;
+            });
+            
+            $cards_table = $mergedData_table->map(function ($row_table) use ($header_table) {
+                return array_combine($header_table, $row_table);
+            });
+
+
+        return view('owner.pages.dashboard.index', [
+            'static' => $cards[0],
+            'static_table' => $cards_table,
+        ]);
     }
+
+    // public function index(){
+    //     if (!Auth::check()) {
+    //         return redirect('/login');
+    //     }        
+
+    //     return view('owner.pages.dashboard.index');
+    // }
 
     // public function index(Request $request)
     // {

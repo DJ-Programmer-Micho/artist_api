@@ -14,16 +14,19 @@ use Carbon\Carbon;
 class ArtistPaymentController extends Controller
 {
     public function index(Request $request){
+        $id = '';
+        $paginator = [];
+        $google_id = '';
 
-        $users = User::get();
+        $users = User::where('role', 2)->get();
         // Get the selected user ID from the request
         $userId = $request->input('user');
 
         // Retrieve the user with the selected ID along with their profile
         $userSelected = User::with('profile')->find($userId);
-        $asd = $userSelected;
-        $paginator = [];
-        if($asd){
+
+        if($userSelected){
+            $id = $userSelected->id;
             $google_id =  $userSelected->profile->g_id;
             $Sheet_ids =  ["sh0"];
             $channel_id =$userSelected->profile->c_id;
@@ -164,14 +167,16 @@ class ArtistPaymentController extends Controller
 
         }
         return view('owner.pages.payments.index', [
+            'id' => $id,
             'users' => $users,
             'songs' => $paginator,
+            'g_id' => $google_id
         ]); 
     }
 
     public function create(){
 
-        $users = User::get();
+        $users = User::where('role',2)->get();
 
         return view('owner.pages.payments.create', [
             'users' => $users,
@@ -212,30 +217,48 @@ class ArtistPaymentController extends Controller
         $sheets->spreadsheet($google_id)->range($logRange)->append([[$title,$release,$expire,'Automaic',(float)$cost,$image]]);
 
         // return response()->json(['message' => 'User created with profile successfully']);
-        return redirect()->route('owner.expire');
+        return redirect(url('user101/expire?user='.$user));
         } 
         return redirect()->route('owner.expire');
     }
 
-    public function updateUser(Request $request, $id)
+    public function editPayment($id, $title, $g_id, $img, $days, $status)
     {
-        $profile = User::with('profile')->where('id', $id)->first();
-        
-        if ($profile) {
-            $google_id = $profile->profile->g_id;
-       
+        $id = $id;
+        $title = $title;
+        $g_id = $g_id;
+        $img = $img; 
+        $days = $days;
+        $status = $status;
+
+        return view('owner.pages.payments.update' ,compact('id','title','g_id','img','days','status'));
+    }
+
+    public function updatePayment(Request $request)
+    {
+        // dd($request->all());
+        $request->validate([
+            'update' => 'required|date',
+            'cost' => 'required|numeric|min:0',
+        ]);
+
+        $id = $request->input('id');
         $title = $request->input('title');
-        $release = $request->input('release');
-        $expire = Carbon::parse($release)->addYearNoOverflow()->toDateString();
-        $cost = $request->input('cost');
+        $google_id = $request->input('g_id');
         $image = $request->input('image');
+
+        $update = $request->input('update');
+        $expire = Carbon::parse($update)->addYearNoOverflow()->toDateString();
+        $cost = $request->input('cost');
 
         $sheets = new Sheets();
         $logRange = 'sh0!F2:K2';
-        $sheets->spreadsheet($google_id)->range($logRange)->append([[$title,$release,$expire,'Automaic',(float)$cost,$image]]);
-        
-        return redirect()->route('owner.expire');
-        } 
-    }
+        $sheets->spreadsheet($google_id)->range($logRange)->append([[$title,$update,$expire,'Automaic',(float)$cost,$image]]);
+            
+        return redirect(url('user101/expire?user='.$id));
+    } 
+
+
+
 
 }

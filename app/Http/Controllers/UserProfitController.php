@@ -17,85 +17,85 @@ class UserProfitController extends Controller
     public function index(Request $request)
     {
 
-        $usersToSelect = User::where('role', '2')->get();
-        
-        $search = $request->input('search');
-        // $users = User::where('role', 2)
-        $users = User::where('role', '2')
-        ->where('name', 'LIKE', '%' . $search . '%')
-        ->with('profile')
-        ->paginate(10);
-
-
-        if(!empty($users)){
-
-            foreach ($users as $index => $user){
-            $google_id =  $user->profile->g_id;
-            $Sheet_ids =  json_decode($user->profile->s_id, true);
-            $profit =  $user->profile->profit;;
-
-            $sheetsData = [];
-            $sheets = new Sheets();
+            $usersToSelect = User::where('role', '2')->get();
             
-            foreach ($Sheet_ids as $sheetName) {
-                $range = $sheetName.'!A1:M'; // Specify the range with sheet name
-                $rows = $sheets->spreadsheet($google_id)->range($range)->get();
-                $sheetsData[$sheetName] = collect($rows);
-            }
+            $search = $request->input('search');
+            // $users = User::where('role', 2)
+            $users = User::where('role', '2')
+            ->where('name', 'LIKE', '%' . $search . '%')
+            ->with('profile')
+            ->paginate(10);
 
-            // Merge data from all sheets into one collection
-            $mergedData = new Collection();
-            $header = null;
-            foreach ($sheetsData as $sheetData) {
-                if (!$sheetData->isEmpty()) {
-                    if ($header === null) {
-                        $header = $sheetData->pull(0);
-                    }
-                    $mergedData = $mergedData->merge($sheetData);
+
+            if(!empty($users)){
+
+                foreach ($users as $index => $user){
+                $google_id =  $user->profile->g_id;
+                $Sheet_ids =  json_decode($user->profile->s_id, true);
+                $profit =  $user->profile->profit;;
+
+                $sheetsData = [];
+                $sheets = new Sheets();
+                
+                foreach ($Sheet_ids as $sheetName) {
+                    $range = $sheetName.'!A1:M'; // Specify the range with sheet name
+                    $rows = $sheets->spreadsheet($google_id)->range($range)->get();
+                    $sheetsData[$sheetName] = collect($rows);
                 }
+
+                // Merge data from all sheets into one collection
+                $mergedData = new Collection();
+                $header = null;
+                foreach ($sheetsData as $sheetData) {
+                    if (!$sheetData->isEmpty()) {
+                        if ($header === null) {
+                            $header = $sheetData->pull(0);
+                        }
+                        $mergedData = $mergedData->merge($sheetData);
+                    }
+                }
+                
+                // Remove rows with the same values as the header
+                $mergedData = $mergedData->filter(function ($row) use ($header) {
+                    return $row !== $header;
+                });
+                
+                // Map the merged data to associate each row with the header names
+                $finalResult = $mergedData->map(function ($row) use ($header) {
+                    return array_combine($header, $row);
+                });
+        
+                $totalEarnings = $finalResult->sum(function ($row) use ($profit) {
+                    $earnings = floatval(str_replace('$', '', $row['Earnings (USD)']));
+                    return $earnings * $profit;
+                });
+
+                $sheetTax = new Sheets();
+                $range = 'sh0!Q3'; // Specify the range with sheet name
+                $dataTax = $sheetTax->spreadsheet($google_id)->range($range)->get();
+                
+                $taxValue = isset($dataTax[0][0]) ? str_replace(',', '', $dataTax[0][0]) : '0';
+                $wallet[$index] = $totalEarnings - (float) $taxValue;
+
+                $totalEarningsArray[$index] = $totalEarnings;
             }
             
-            // Remove rows with the same values as the header
-            $mergedData = $mergedData->filter(function ($row) use ($header) {
-                return $row !== $header;
-            });
-            
-            // Map the merged data to associate each row with the header names
-            $finalResult = $mergedData->map(function ($row) use ($header) {
-                return array_combine($header, $row);
-            });
+        }
+            if (!isset($totalEarningsArray)) {
+                $totalEarningsArray = 0; // or any default value as per your requirement
+            }
+
+            if (!isset($wallet)) {
+                $wallet = 0; // or any default value as per your requirement
+            }
     
-            $totalEarnings = $finalResult->sum(function ($row) use ($profit) {
-                $earnings = floatval(str_replace('$', '', $row['Earnings (USD)']));
-                return $earnings * $profit;
-            });
-
-            $sheetTax = new Sheets();
-            $range = 'sh0!N3'; // Specify the range with sheet name
-            $dataTax = $sheetTax->spreadsheet($google_id)->range($range)->get();
-            
-            $taxValue = isset($dataTax[0][0]) ? str_replace(',', '', $dataTax[0][0]) : '0';
-            $wallet[$index] = $totalEarnings - (float) $taxValue;
-
-            $totalEarningsArray[$index] = $totalEarnings;
-        }
-        
-    }
-        if (!isset($totalEarningsArray)) {
-            $totalEarningsArray = 0; // or any default value as per your requirement
-        }
-
-        if (!isset($wallet)) {
-            $wallet = 0; // or any default value as per your requirement
-        }
- 
-        return view('owner.pages.artistProfiles.index', [
-            'usersToSelect' => $usersToSelect,
-            'users' => $users,
-            'search' => $search,
-            'totalEarningsArray' => $totalEarningsArray,
-            'wallet' => $wallet
-        ]);
+            return view('owner.pages.artistProfiles.index', [
+                'usersToSelect' => $usersToSelect,
+                'users' => $users,
+                'search' => $search,
+                'totalEarningsArray' => $totalEarningsArray,
+                'wallet' => $wallet
+            ]);
     }
 
     public function view($id){
@@ -237,7 +237,7 @@ class UserProfitController extends Controller
         $country = $data['items'][0]['snippet']['country'];
 
         $sheetTax = new Sheets();
-        $range = $tax.'!N3'; // Specify the range with sheet name
+        $range = $tax.'!Q3'; // Specify the range with sheet name
         $dataTax = $sheetTax->spreadsheet($google_id)->range($range)->get();
         
         $taxValue = isset($dataTax[0][0]) ? str_replace(',', '', $dataTax[0][0]) : '0';
@@ -304,7 +304,7 @@ class UserProfitController extends Controller
         ]);
 
         $sheets = new Sheets();
-        $range = 'sh0!U3';
+        $range = 'sh0!X3';
         $google_id = $request->input('g_id');
         $profit = $request->input('profit');
         $sheets->spreadsheet($google_id)->range($range)->update([[$profit]]);

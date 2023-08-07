@@ -14,29 +14,29 @@
     
     <div class="d-flex justify-content-between">
         <div>
-        <div class="d-none d-sm-inline-block form-inline mr-auto my-2 my-md-0 mw-100 navbar-search">
-        <form action="{{ route('owner.expire') }}" method="GET">
-            <div class="input-group">
-                <select name="user" id="user" class="form-control bg-dark border-0 text-white">
+            <div class="d-none d-sm-inline-block form-inline mr-auto my-2 my-md-0 mw-100 navbar-search">
+                <form action="{{ route('owner.expire') }}" method="GET">
+                    <div class="input-group">
+                        <select name="user" id="user" class="form-control bg-dark border-0 text-white">
 
-                    <option value="">Select a user</option>
-                    @foreach ($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                    @endforeach
-                </select>
-                <div class="input-group-append">
-                    <button class="btn btn-primary" type="submit">
-                        <i class="fas fa-search fa-sm"></i>
-                    </button>
-                </div>
+                            <option value="">Select a user</option>
+                            @foreach ($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+        <div>
+            <a href="{{route('owner.expire.add')}}" class="btn btn-success">+ Add New Song</a>
+        </div>
     </div>
-    </div>
-    <div>
-        <a href="{{route('owner.expire.add')}}" class="btn btn-success">+ Add New Song</a>
-     </div>
-</div>
         
 
 
@@ -60,7 +60,8 @@
                     @forelse ($songs as $index => $song)
                         <tr>
                             <td class="align-middle">{{ $index + 1 }}</td>
-                            <td class="align-middle text-center"><img src="https://lh3.googleusercontent.com/{{ $song['image'] }}" alt="https://lh3.googleusercontent.com/{{ $song['image'] }}" width="50"></td>
+                            {{-- <td class="align-middle text-center"><img src="https://lh3.googleusercontent.com/{{ $song['image'] }}" alt="https://lh3.googleusercontent.com/{{ $song['image'] }}" width="50"></td> --}}
+                            <td class="align-middle text-center"><img src="https://s3.amazonaws.com/gather.fandalism.com/{{ $song['image'] }}" alt="https://s3.amazonaws.com/gather.fandalism.com/{{ $song['image'] }}" width="50"></td>
                             <td class="align-middle text-center">{{ $song['title'] }}</td>
                             <td class="align-middle text-center text-info">Auto</td>
                             <td class="align-middle text-center">
@@ -75,7 +76,7 @@
                             <td class="align-middle text-center">{{ $song['daysDifference'] }} days</td>
                             <td class="align-middle text-center">$ {{ $song['cost'] }}</td>
                             <td class="align-middle text-center">
-                                <a href="{{ url('/user101/artists/edit/'.$user->id) }}" class="btn btn-success m-1">
+                                <a href="{{ url('/user101/expire/edit/'.$id.'/'.$song['title'].'/'.$g_id.'/'.$song['image']).'/'.$song['daysDifference'].'/'. $song['status']}}" class="btn btn-success m-1">
                                     <i class="fas fa-vote-yea"></i>
                                 </a>
                             </td>

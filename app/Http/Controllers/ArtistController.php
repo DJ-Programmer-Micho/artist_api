@@ -157,11 +157,17 @@ class ArtistController extends Controller
         $country = $data['items'][0]['snippet']['country'];
 
         $sheetTax = new Sheets();
-        $range = $tax.'!N3'; // Specify the range with sheet name
+        $range = $tax.'!Q3'; // Specify the range with sheet name
         $dataTax = $sheetTax->spreadsheet($google_id)->range($range)->get();
+
+        $sheetRecipet = new Sheets();
+        $range = $tax.'!N1'; // Specify the range with sheet name
+        $dataRecipet = $sheetRecipet->spreadsheet($google_id)->range($range)->get();
         
         $taxValue = isset($dataTax[0][0]) ? str_replace(',', '', $dataTax[0][0]) : '0';
-        $wallet = $totalEarnings - (float) $taxValue;
+        $recieptValue = isset($dataRecipet[0][0]) ? str_replace(',', '', $dataRecipet[0][0]) : '0';
+
+        $wallet = $totalEarnings - (float) $taxValue - (float) $recieptValue;
 
         return view('dashboard.pages.dashboard',
         [
@@ -176,6 +182,7 @@ class ArtistController extends Controller
             'uploadsCount'=>$uploadsCount, 
             'hiddenSubscriberCount'=>$hiddenSubscriberCount, 
             'earningsSum' => $totalEarnings,
+            'dataRecipt' => $dataRecipet[0],
             'dataTax' => $dataTax[0],
             'wallet' => $wallet,
             'storeQuantities' => $storeQuantities,
@@ -310,9 +317,9 @@ class ArtistController extends Controller
         $userData = Auth::user();
         $google_id =  $userData->profile->g_id;
         $Sheet_ids =  ["sh0"];
-        $channel_id =$userData->profile->c_id;
+        $channel_id = $userData->profile->c_id;
         $apiKey = env('YOUTUBE_API_V4');
-        $profit =  0.6;
+        $profit =  $userData->profile->profit;
 
         $cacheKey = 'google_sheets_data_payment';
         $cacheDuration = now()->addHour(); // Cache duration: 1 hour
@@ -475,4 +482,48 @@ class ArtistController extends Controller
             'songs' => $paginator,
         ]);  
     } 
+
+    public function reciept(){
+        // Check if the user is authenticated
+        if (!Auth::check()) {
+            return redirect('/login');
+        }        
+
+        $userData = Auth::user();
+        $google_id =  $userData->profile->g_id;
+        $channel_id =$userData->profile->c_id;
+        $apiKey = env('YOUTUBE_API_V4');
+
+        $sheets = new Sheets();
+        $range = 'sh0!M3:N'; // Specify the range with sheet name
+        $rows = $sheets->spreadsheet($google_id)->range($range)->get();
+        
+
+        $apiUrl = 'https://www.googleapis.com/youtube/v3/channels?part=snippet,contentDetails,statistics,brandingSettings&id=' . $channel_id . '&key=' . $apiKey;
+        $response = file_get_contents($apiUrl);
+        if ($response === false) {
+            die('Failed to fetch data from YouTube API.');
+        }
+        // dd($response);
+        $data = json_decode($response, true);
+        if (!isset($data['items']) || empty($data['items'])) {
+            die('Invalid API response. Unable to fetch channel data.');
+        }
+        $channelName = $data['items'][0]['snippet']['title'];
+        $thumbnails = $data['items'][0]['snippet']['thumbnails']['medium']['url'];
+        $bannerImageUrl = $data['items'][0]['brandingSettings']['image']['bannerExternalUrl'];
+        $description = $data['items'][0]['snippet']['description'];
+        $customUrl = $data['items'][0]['snippet']['customUrl'];
+        $country = $data['items'][0]['snippet']['country'];
+
+        return view('dashboard.pages.reciept', [
+            'datas' =>  $rows, 
+            'channelName' =>  $channelName, 
+            'thumbnails'=> $thumbnails,
+            'bannerImageUrl' => $bannerImageUrl.'=w2120-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj',
+            'customUrl' => $customUrl,
+            'country' => $country,
+            'description' => $description,
+        ]); 
+    }
 }
