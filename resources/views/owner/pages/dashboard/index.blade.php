@@ -586,7 +586,7 @@
 <!-- End of Main Content -->
 
 
-<script>
+{{-- <script>
 document.addEventListener("DOMContentLoaded", function () {
     var ctx = document.getElementById("myAreaChart");
     var myLineChart;
@@ -704,7 +704,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateChart(selectedYearData);
     });
 });
-</script>
+</script> --}}
                 
                 
 {{-- @endsection --}}
