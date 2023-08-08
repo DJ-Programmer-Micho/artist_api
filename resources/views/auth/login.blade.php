@@ -12,7 +12,7 @@
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <img src="{{asset('assets/img/met_pwa.png')}}" width="60" class="d-lg-none mb-3" alt="metiraq">
+                                    <img src="{{asset('assets/img/mstudioc _pwa.png')}}" width="60" class="d-lg-none mb-3" alt="metiraq">
                                     <h1 class="h4 text-gray-900 mb-4">MET IRAQ | YOUTUBE</h1>
                                 </div>
                                 <form class="user" action="{{route('logging')}}" method="post">
