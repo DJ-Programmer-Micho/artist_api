@@ -14,6 +14,15 @@ use Carbon\Carbon;
 class ArtistPaymentController extends Controller
 {
     public function index(Request $request){
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
+
         $id = '';
         $paginator = [];
         $google_id = '';
@@ -175,6 +184,14 @@ class ArtistPaymentController extends Controller
     }
 
     public function create(){
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
 
         $users = User::where('role',2)->get();
 
@@ -185,6 +202,14 @@ class ArtistPaymentController extends Controller
 
     public function add(Request $request)
     {
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
 
         $request->validate([
             'user' => 'required',
@@ -216,14 +241,34 @@ class ArtistPaymentController extends Controller
         $sheets->spreadsheet($google_id)->range($mainRange)->append([[$title,$release,(float)$cost,$image]]);
         $sheets->spreadsheet($google_id)->range($logRange)->append([[$title,$release,$expire,'Automaic',(float)$cost,$image]]);
 
-        // return response()->json(['message' => 'User created with profile successfully']);
-        return redirect(url('user101/expire?user='.$user));
+
+        $success = array(
+            'message' => 'New Song Have Been Inserted', 
+            'alert-type' => 'success'
+        );
+
+ 
+        return redirect(url('user101/expire?user='.$user))->with($success);
         } 
-        return redirect()->route('owner.expire');
+        $error = array(
+            'message' => 'Something Went Wrong', 
+            'alert-type' => 'error'
+        );
+
+        return redirect()->route('owner.expire')->with($error);
     }
 
     public function editPayment($id, $title, $g_id, $img, $days, $status)
     {
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
+
         $id = $id;
         $title = $title;
         $g_id = $g_id;
@@ -255,10 +300,11 @@ class ArtistPaymentController extends Controller
         $logRange = 'sh0!F2:K2';
         $sheets->spreadsheet($google_id)->range($logRange)->append([[$title,$update,$expire,'Automaic',(float)$cost,$image]]);
             
-        return redirect(url('user101/expire?user='.$id));
+        $success = array(
+            'message' => 'Song Has Been Updated', 
+            'alert-type' => 'success'
+        );
+
+        return redirect(url('user101/expire?user='.$id))->with($success);
     } 
-
-
-
-
 }

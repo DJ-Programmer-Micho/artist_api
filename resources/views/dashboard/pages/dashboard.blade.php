@@ -259,7 +259,7 @@
                                                 {{ $key }} <span class="float-right">${{ number_format($item) }}</span>
                                             </h4>
                                             <div class="progress mb-4">
-                                                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ ($item / intval($earningsSum)) * 100 }}%"
+                                                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ ($item / ((float)$earningsSum)) * 100 }}%"
                                                     aria-valuenow="{{ $item }}" aria-valuemin="0" aria-valuemax="3"></div>
                                             </div>
                                         @endforeach
@@ -282,7 +282,7 @@
                                                 {{ $key }} <span class="float-right">{{ number_format($item) }}</span>
                                             </h4>
                                             <div class="progress mb-4">
-                                                <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ ($item / intval($totalQuantities)) * 100 }}%"
+                                                <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ ($item / ($totalQuantities)) * 100 }}%"
                                                     aria-valuenow="{{ $item }}" aria-valuemin="0" aria-valuemax="3"></div>
                                             </div>
                                         @endforeach
@@ -304,7 +304,7 @@
                                                 {{ $key }} <span class="float-right">${{ number_format($item) }}</span>
                                             </h4>
                                             <div class="progress mb-4">
-                                                <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ ($item / intval($earningsSum)) * 100 }}%"
+                                                <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ ($item / ((float)$earningsSum)) * 100 }}%"
                                                     aria-valuenow="{{ $item }}" aria-valuemin="0" aria-valuemax="3"></div>
                                             </div>
                                         @endforeach

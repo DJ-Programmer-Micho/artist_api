@@ -63,7 +63,7 @@
                     @foreach ($songs as $index => $song)
                         <tr>
                             <td class="align-middle">{{ $index + 1 }}</td>
-                            <td class="align-middle text-center"><img src="https://lh3.googleusercontent.com/{{ $song['image'] }}" alt="https://lh3.googleusercontent.com/{{ $song['image'] }}" width="50"></td>
+                            <td class="align-middle text-center"><img src="https://s3.amazonaws.com/gather.fandalism.com/{{ $song['image'] }}" alt="https://s3.amazonaws.com/gather.fandalism.com/{{ $song['image'] }}" width="50"></td>
                             <td class="align-middle text-center">{{ $song['title'] }}</td>
                             <td class="align-middle text-center text-info">Auto</td>
                             <td class="align-middle text-center">

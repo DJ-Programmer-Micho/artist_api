@@ -16,6 +16,14 @@ class UserProfitController extends Controller
 {
     public function index(Request $request)
     {
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
 
             $usersToSelect = User::where('role', '2')->get();
             
@@ -99,6 +107,14 @@ class UserProfitController extends Controller
     }
 
     public function view($id){
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
 
         $artistData = User::with('profile')->where('id', $id)->first();
 
@@ -270,9 +286,21 @@ class UserProfitController extends Controller
 
     public function editUser($id)
     {
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
+
         $user = User::with('profile')->find($id);
         if (!$user) {
-            return redirect()->route('owner.artists')->with('error', 'Profile not found.');
+            $no_user = array(
+                'message' => 'No Artist Found!', 
+                'alert-type' => 'error'
+            );
+            return redirect()->route('owner.artists')->with($no_user);
         }
 
         return view('owner.pages.artistProfiles.edit' ,compact('user'));
@@ -309,6 +337,11 @@ class UserProfitController extends Controller
         $profit = $request->input('profit');
         $sheets->spreadsheet($google_id)->range($range)->update([[$profit]]);
 
-        return redirect()->route('owner.profits')->with('success', 'Profile updated successfully.');
+
+        $success = array(
+            'message' => 'Artist Has Been Updated', 
+            'alert-type' => 'success'
+        );
+        return redirect()->route('owner.profits')->with($success);
     }
 }

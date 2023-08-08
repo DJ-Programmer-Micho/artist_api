@@ -328,6 +328,7 @@
                         <th class="align-middle text-center">MET Tax</th>
                         <th class="align-middle text-center">Recipt</th>
                         <th class="align-middle text-center">Wallet</th>
+                        <th class="align-middle text-center">T.Profit</th>
                         <th class="align-middle text-center">Songs</th>
                     </tr>
                 </thead>
@@ -338,13 +339,14 @@
                             <td class="align-middle text-center">{{ $st['Artist Name'] }}</td>
                             <td class="align-middle text-center text-success">${{ $st['profit'] }}</td>
                             <td class="align-middle text-center text-success">${{ $st['artist_profit'] }}</td>
-                            <td class="align-middle text-center text-success">+ ${{ $st['met_profit'] }}</td>
+                            <td class="align-middle text-center text-success">+&nbsp;${{ $st['met_profit'] }}</td>
                             <td class="align-middle text-center text-warning">{{ $st['quantity_tax'] }}</td>
                             <td class="align-middle text-center text-warning">${{ $st['tax'] }}</td>
-                            <td class="align-middle text-center text-warning">+ ${{ $st['profit_tax'] }}</td>
-                            <td class="align-middle text-center text-warning">- ${{ $st['met_tax'] }}</td>
-                            <td class="align-middle text-center text-danger">- ${{ $st['reciept'] }}</td>
+                            <td class="align-middle text-center text-warning">+&nbsp;${{ $st['profit_tax'] }}</td>
+                            <td class="align-middle text-center text-warning">-&nbsp;${{ $st['met_tax'] }}</td>
+                            <td class="align-middle text-center text-danger">-&nbsp;${{ $st['reciept'] }}</td>
                             <td class="align-middle text-center text-info">${{ $st['wallet'] }}</td>
+                            <td class="align-middle text-center">${{  $st['met_profit'] + $st['profit_tax']}}</td>
                             <td class="align-middle text-center">{{ $st['Song'] }}</td>
                         </tr>
                     @empty

@@ -14,6 +14,14 @@ use Carbon\Carbon;
 class ArtistRecieptController extends Controller
 {
     public function index(Request $request){
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
+
         $id = '';
         $finalResult = [];
         $google_id = '';
@@ -69,15 +77,28 @@ class ArtistRecieptController extends Controller
             // });
 
         }
+
+        $user_noti = array(
+            'message' => 'Security Checked!', 
+            'alert-type' => 'info'
+        );
+
         return view('owner.pages.reciepts.index', [
             'id' => $id,
             'users' => $users,
             'datas' => $finalResult,
             'g_id' => $google_id
-        ]); 
+        ])->with($user_noti); 
     }
 
     public function create(){
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
 
         $users = User::where('role',2)->get();
 
@@ -88,8 +109,14 @@ class ArtistRecieptController extends Controller
 
     public function add(Request $request)
     {
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
 
-        // dd($request->all());
         $request->validate([
             'user' => 'required',
             'date' => 'required|date',
@@ -111,11 +138,19 @@ class ArtistRecieptController extends Controller
 
         $sheets = new Sheets();
         $logRange = 'sh0!M2:N2';
-        $sheets->spreadsheet($google_id)->range($logRange)->append([[$date,$cost]]);
+        $sheets->spreadsheet($google_id)->range($logRange)->append([[$cost,$date]]);
 
-        // return response()->json(['message' => 'User created with profile successfully']);
-        return redirect(url('user101/reciept?user='.$user));
+        $success = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'success'
+        );
+
+        return redirect(url('user101/reciept?user='.$user))->with($success);
         } 
-        return redirect()->route('owner.reciept');
+        $error = array(
+            'message' => 'Something Went Wrong', 
+            'alert-type' => 'error'
+        );
+        return redirect()->route('owner.reciept')->with($error);
     }
 }

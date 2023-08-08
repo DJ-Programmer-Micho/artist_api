@@ -42,24 +42,46 @@ class AuthController extends Controller
         if ($user && $user->status == 1 && Auth::attempt($credentials)) {
             $user_role = Auth::user()->role;
     
+            $owner = array(
+                'message' => 'Welcome Master', 
+                'alert-type' => 'success'
+            );
+
+            $artist = array(
+                'message' => 'Welcome Back '.$user->name, 
+                'alert-type' => 'success'
+            );
+
+            $error = array(
+                'message' => 'Something Went Wrong', 
+                'alert-type' => 'error'
+            );
             switch ($user_role) {
                 case 1:
-                    return redirect('/own');
+                    return redirect('/own')->with($owner);
                     break;
                 case 2:
-                    return redirect('/'.$user->name);
+                    return redirect('/'.$user->name)->with($artist);
                     break;
                 default:
                     Auth::logout();
-                    return redirect('/login')->with('error', 'Oops! Something went wrong');
+                    return redirect('/login')->with($error);
             }
         } else {
-            return redirect('/login')->with('error', 'Invalid credentials or user is inactive.');
+            $error = array(
+                'message' => 'Please Sign In', 
+                'alert-type' => 'error'
+            );
+            return redirect('/login')->with($error);
         }
     } // END Function (Login Fucntion)
 
     public function logout(){
         auth()->logout();
-        return back();
+        $notification = array(
+            'message' => 'Successfully Logged Out', 
+            'alert-type' => 'info'
+        );
+        return redirect('/login')->with($notification);
     } // END Function (Logout)
 }

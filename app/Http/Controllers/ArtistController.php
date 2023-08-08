@@ -14,9 +14,14 @@ class ArtistController extends Controller
 {
 
     public function test(){
-        // Check if the user is authenticated
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+
+
         if (!Auth::check()) {
-            return redirect('/login');
+            return redirect('/login')->with($user_noti);
         }        
 
         $userData = Auth::user();
@@ -29,7 +34,7 @@ class ArtistController extends Controller
 
        
         
-        $cacheKey = 'google_sheets_data';
+        $cacheKey = 'google_sheets_data'.$userData->id;
         $cacheDuration = now()->addHour(); // Cache duration: 1 hour
 
 
@@ -197,9 +202,13 @@ class ArtistController extends Controller
 
 
     public function content(Request $request){
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
 
         if (!Auth::check()) {
-            return redirect('/login');
+            return redirect('/login')->with($user_noti);
         }        
 
         $userData = Auth::user();
@@ -207,10 +216,9 @@ class ArtistController extends Controller
         $Sheet_ids =  json_decode($userData->profile->s_id, true);
         $channel_id =$userData->profile->c_id;
         $apiKey = env('YOUTUBE_API_V4');
-        $profit = $userData->profile->profit;
 
             // Check if the data is already cached
-        $cacheKey = 'google_sheets_data';
+        $cacheKey = 'google_sheets_data'.$userData->id;
         $cacheDuration = now()->addHour(); // Cache duration: 1 hour
         $dataCache = Cache::remember($cacheKey, $cacheDuration, function () use ($google_id, $Sheet_ids) {
 
@@ -309,19 +317,22 @@ class ArtistController extends Controller
 
 
     public function payment(Request $request){
-        // Check if the user is authenticated
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+
         if (!Auth::check()) {
-            return redirect('/login');
-        }        
+            return redirect('/login')->with($user_noti);
+        } 
 
         $userData = Auth::user();
         $google_id =  $userData->profile->g_id;
         $Sheet_ids =  ["sh0"];
         $channel_id = $userData->profile->c_id;
         $apiKey = env('YOUTUBE_API_V4');
-        $profit =  $userData->profile->profit;
 
-        $cacheKey = 'google_sheets_data_payment';
+        $cacheKey = 'google_sheets_data_payment'.$userData->id;
         $cacheDuration = now()->addHour(); // Cache duration: 1 hour
 
         $cacheDataPatyment = Cache::remember($cacheKey, $cacheDuration, function () use ($google_id, $Sheet_ids) {
@@ -368,7 +379,7 @@ class ArtistController extends Controller
             $expireDate = Carbon::createFromFormat('Y-m-d', $data['Expire Date']);
         
             // Calculate the difference between the "Updated Date" and the current date
-            $updatedDaysDifference = $currentDate->diffInDays($updatedDate, false);
+            // $updatedDaysDifference = $currentDate->diffInDays($updatedDate, false);
         
             // Calculate the difference between the "Expire Date" and the current date
             $expireDaysDifference = $currentDate->diffInDays($expireDate, false);
@@ -484,10 +495,14 @@ class ArtistController extends Controller
     } 
 
     public function reciept(){
-        // Check if the user is authenticated
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+
         if (!Auth::check()) {
-            return redirect('/login');
-        }        
+            return redirect('/login')->with($user_noti);
+        }      
 
         $userData = Auth::user();
         $google_id =  $userData->profile->g_id;

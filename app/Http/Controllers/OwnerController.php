@@ -14,10 +14,14 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class OwnerController extends Controller
 {
     public function index(){
-        // Check if the user is authenticated
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
         if (!Auth::check()) {
-            return redirect('/login');
-        }        
+            return redirect('/login')->with($user_noti);
+        } 
+     
 
         $google_id = '1PlVbc_A1HtVp2ZIB3JqKLNDOoWQlIq9yuS7DmvkGiIE';
         $Sheet_ids = ['main'];
@@ -103,6 +107,15 @@ class OwnerController extends Controller
 
     public function userProfit(Request $request)
     {
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
+
+
         $search = $request->input('search');
         // $users = User::where('role', 2)
         $users = User::where('name', 'LIKE', '%' . $search . '%')
@@ -154,9 +167,6 @@ class OwnerController extends Controller
 
             $totalEarningsArray[$index] = $totalEarnings;
         }
-        
-
-
 
         return view('owner.pages.userProfit', [
             'users' => $users,

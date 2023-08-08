@@ -16,6 +16,15 @@ class UserArtistController extends Controller
 {
     public function index(Request $request)
     {
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
+
+
         $search = $request->input('search');
         $users = User::where('role', 2)
         ->where('name', 'LIKE', '%' . $search . '%')
@@ -26,11 +35,28 @@ class UserArtistController extends Controller
 
     public function create()
     {
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
+
+
         return view('owner.pages.users.create');
     }
 
     public function add(Request $request)
     {
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
+
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -75,14 +101,30 @@ class UserArtistController extends Controller
         $profit = $request->input('profit');
         $sheets->spreadsheet($google_id)->range($range)->update([[$profit]]);
 
-        return response()->json(['message' => 'User created with profile successfully']);
+        $success = array(
+            'message' => 'Artist Has Benn Created Succefully', 
+            'alert-type' => 'success'
+        );
+        return redirect()->route('owner.artists')->with($success);
     }
 
     public function editUser($id)
     {
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
+
         $user = User::with('profile')->find($id);
+        $no_user = array(
+            'message' => 'No Artist Found!', 
+            'alert-type' => 'error'
+        );
         if (!$user) {
-            return redirect()->route('owner.artists')->with('error', 'Profile not found.');
+            return redirect()->route('owner.artists')->with($no_user);
         }
 
         return view('owner.pages.users.edit' ,compact('user'));
@@ -90,6 +132,13 @@ class UserArtistController extends Controller
 
     public function updateUser(Request $request, $id)
     {
+        $user_noti = array(
+            'message' => 'Please Sign In Again', 
+            'alert-type' => 'info'
+        );
+        if (!Auth::check()) {
+            return redirect('/login')->with($user_noti);
+        } 
 
         $sh = [];
         for ($i = 1; $i <= (int)$request->input('s_id'); $i++){
@@ -119,21 +168,34 @@ class UserArtistController extends Controller
             'profit' => $request->input('profit'),
         ]);
 
-
-        return redirect()->route('owner.artists')->with('success', 'Profile updated successfully.');
+        $success = array(
+            'message' => 'Artist Has Been Updated!', 
+            'alert-type' => 'success'
+        );
+        return redirect()->route('owner.artists')->with($success);
     }
 
     public function deleteUser($id){
+        
          // Find the user by ID
     $user = User::find($id);
 
     // Check if the user exists
+    $no_user = array(
+        'message' => 'No Artist Found!', 
+        'alert-type' => 'error'
+    );
     if (!$user) {
-        return redirect()->back()->with('error', 'User not found.');
+        return redirect()->back()->with($no_user);
     }
     // Delete the user
     $user->delete();
 
-    return redirect()->route('owner.artists')->with('success', 'User deleted successfully.');
+    $success = array(
+        'message' => 'Artist Has Been Deleted!', 
+        'alert-type' => 'success'
+    );
+
+    return redirect()->route('owner.artists')->with($success);
     }
 }
