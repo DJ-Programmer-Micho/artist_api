@@ -161,6 +161,12 @@ class ArtistController extends Controller
         $customUrl = $data['items'][0]['snippet']['customUrl'];
         $country = $data['items'][0]['snippet']['country'];
 
+        if($hiddenSubscriberCount == true){
+            $hiddenSubscriberCount = 'Yes, Is Hidden';
+        } else {
+            $hiddenSubscriberCount = 'No, Is Not Hidden';
+        }
+
         $sheetTax = new Sheets();
         $range = $tax.'!Q3'; // Specify the range with sheet name
         $dataTax = $sheetTax->spreadsheet($google_id)->range($range)->get();

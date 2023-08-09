@@ -24,7 +24,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'role' => fake()->unique()->numberBetween(1,2), //test role numbers
             'status' => 1, //test role numbers
-            'password' => Hash::make('321321321'), // password
+            'password' => Hash::make('Met@2023artist'), // password
             // 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
         ];

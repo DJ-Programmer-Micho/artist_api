@@ -17,16 +17,31 @@ class AuthController extends Controller
                 return redirect('/login')->with('error', 'Your account is inactive. Please contact the administrator.');
             }
     
+            $owner = array(
+                'message' => 'Welcome Master', 
+                'alert-type' => 'success'
+            );
+
+            $artist = array(
+                'message' => 'Welcome Back '.$user->name, 
+                'alert-type' => 'success'
+            );
+
+            $error = array(
+                'message' => 'Something Went Wrong', 
+                'alert-type' => 'error'
+            );
+
             switch ($user->role) {
                 case 1:
-                    return redirect('/own');
+                    return redirect('/own')->with($owner);
                     break;
                 case 2:
-                    return redirect('/'.$user->name);
+                    return redirect('/'.$user->name)->with($artist);
                     break;
                 default:
                     Auth::logout();
-                    return redirect('/login')->with('error', 'Oops! Something went wrong');
+                    return redirect('/login')->with($error);
             }
         }
         return view('auth.login');

@@ -82,8 +82,13 @@ class UserProfitController extends Controller
                 $range = 'sh0!Q3'; // Specify the range with sheet name
                 $dataTax = $sheetTax->spreadsheet($google_id)->range($range)->get();
                 
+                $sheetRecipet = new Sheets();
+                $range = 'sh0!N1'; // Specify the range with sheet name
+                $dataRecipet = $sheetRecipet->spreadsheet($google_id)->range($range)->get();
+
                 $taxValue = isset($dataTax[0][0]) ? str_replace(',', '', $dataTax[0][0]) : '0';
-                $wallet[$index] = $totalEarnings - (float) $taxValue;
+                $recieptValue = isset($dataRecipet[0][0]) ? str_replace(',', '', $dataRecipet[0][0]) : '0';
+                $wallet[$index] = $totalEarnings - (float) $taxValue - (float) $recieptValue;
 
                 $totalEarningsArray[$index] = $totalEarnings;
             }
@@ -125,7 +130,7 @@ class UserProfitController extends Controller
         $apiKey = env('YOUTUBE_API_V4');
         $profit =  $artistData->profile->profit;
 
-        $cacheKey = 'google_sheets_data';
+        $cacheKey = 'google_sheets_data_'.$artistData->id;
         $cacheDuration = now()->addHour(); // Cache duration: 1 hour
 
 
@@ -235,11 +240,12 @@ class UserProfitController extends Controller
         if ($response === false) {
             die('Failed to fetch data from YouTube API.');
         }
-        // dd($response);
         $data = json_decode($response, true);
         if (!isset($data['items']) || empty($data['items'])) {
             die('Invalid API response. Unable to fetch channel data.');
         }
+        
+        dd($data);
         $channelName = $data['items'][0]['snippet']['title'];
         $thumbnails = $data['items'][0]['snippet']['thumbnails']['medium']['url'];
         $bannerImageUrl = $data['items'][0]['brandingSettings']['image']['bannerExternalUrl'];
@@ -252,12 +258,25 @@ class UserProfitController extends Controller
         $customUrl = $data['items'][0]['snippet']['customUrl'];
         $country = $data['items'][0]['snippet']['country'];
 
+
+        if($hiddenSubscriberCount == true){
+            $hiddenSubscriberCount = 'Yes, Is Hidden';
+        } else {
+            $hiddenSubscriberCount = 'No, Is Not Hidden';
+        }
+
         $sheetTax = new Sheets();
         $range = $tax.'!Q3'; // Specify the range with sheet name
         $dataTax = $sheetTax->spreadsheet($google_id)->range($range)->get();
         
+        $sheetRecipet = new Sheets();
+        $range = $tax.'!N1'; // Specify the range with sheet name
+        $dataRecipet = $sheetRecipet->spreadsheet($google_id)->range($range)->get();
+        
         $taxValue = isset($dataTax[0][0]) ? str_replace(',', '', $dataTax[0][0]) : '0';
-        $wallet = $totalEarnings - (float) $taxValue;
+        $recieptValue = isset($dataRecipet[0][0]) ? str_replace(',', '', $dataRecipet[0][0]) : '0';
+
+        $wallet = $totalEarnings - (float) $taxValue - (float) $recieptValue;
 
         return view('owner.pages.artistProfiles.view',
         [
@@ -272,6 +291,7 @@ class UserProfitController extends Controller
             'uploadsCount'=>$uploadsCount, 
             'hiddenSubscriberCount'=>$hiddenSubscriberCount, 
             'earningsSum' => $totalEarnings,
+            'dataRecipt' => $dataRecipet[0],
             'dataTax' => $dataTax[0],
             'wallet' => $wallet,
             'storeQuantities' => $storeQuantities,
